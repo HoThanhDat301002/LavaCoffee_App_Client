@@ -1,24 +1,52 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, FlatList } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, FlatList, Pressable, Button, TouchableWithoutFeedback, TextInput} from 'react-native'
 import React, {useState} from 'react'
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 import { height } from './DetailNews';
 import productFeatured from '../types/dataFeaturedProducts'
 import { Ionicons } from '@expo/vector-icons'; 
+import Modal from "react-native-modal";
+export const data = [
+    {
+        id: 10,
+        record: 'Ngọt',
+    },
+    {
+        id:13,
+        record: 'Ít ngọt',
+    },
+    {
+        id:22,
+        record: 'Ít đá',
+    },
+    {
+        id: 21,
+        record: 'Để đá riêng',
+    },
+    {
+        id: 15,
+        record: 'Không lấy ống hút và muỗng nhựa',
+    }
+]
 
 const ProductDetail = (props,route) => {
     const {navigation,route:{params: {id},},} = props
-
     const [mood, setMood] = useState('Vừa')
     const [finalPrice, setFinalPrice] = useState(35000)
     const [heart, setHeart] = useState(false)
     const [qwe, setQwe] = useState()
-
+    const [modalVisible, setModalVisible] = useState(false);
     const [quantity, setQuatity] = useState(1);
+    const [recordInput, setRecordIput] = useState('');
+    const [recordInputUpdate, setRecordIputUpdate] = useState('');
+    const [textLength, setTextLength] = useState(0)
 
+        const toggleModal = () => {
+            setModalVisible(!modalVisible);
+        };
 
     const item = productFeatured.find((items) =>{
         if(items.id == id){
-            console.log('detail========>', items)
+            // console.log('detail========>', items)
             return items;
         }
       })
@@ -44,6 +72,18 @@ const ProductDetail = (props,route) => {
     //        </TouchableOpacity>
     //     )
     //  }
+
+        // console.log(data)
+        // console.log('.....: ', recordInput)
+         const renderRecord = (items) =>{
+            return(
+               <TouchableOpacity onPress={()=> setRecordIput(items.item.record)}>
+                    <View style = {styles.goiY1Container}>
+                        <Text style = {styles.textGoiY1}>{items.item.record}</Text>
+                    </View>
+               </TouchableOpacity>
+            )
+         }
 
     const onNumberChange = (isAdd: boolean) => {
         if (isAdd == true) {
@@ -147,8 +187,98 @@ const ProductDetail = (props,route) => {
                 </View>
             </View>
         </View>
-        <View style = {{height:100}}></View>
+        <View style = {styles.recordContainer}>
+            <View style = {styles.titleRecordContainer}>
+                <View style = {styles.textTitleContainer}>
+                    <Text style = {styles.textTitle}>Yêu cầu khác</Text>
+                    <Text style = {styles.textTyChon}>Những tùy chọn khác</Text>
+                </View>
+               <View style = {{paddingTop: 20,paddingRight: 20,}}>
+                <Pressable onPress={()=>setModalVisible(true)} >
+                    <View style = {styles.recordTextContainer}>
+                        {
+                            recordInputUpdate == '' ?
+                            <Text style = {styles.recordText}>Thêm ghi chú</Text>
+                            :
+                            <Text style = {styles.recordText}>{recordInputUpdate}</Text>
+                        }
+                    </View>
+                </Pressable>
+               </View>
+            </View>
+        </View>      
+        <View style={{height: 100,}}></View>
         </ScrollView>
+
+        <View>
+            <Modal
+            animationIn={'fadeIn'}
+            animationOut={'fadeOutDown'}
+            transparent={true}
+            onBackdropPress = {()=> setModalVisible(false)}
+            onSwipeComplete={() => setModalVisible(false)}
+            swipeDirection= {'down'}
+             isVisible={modalVisible}
+             >
+                <View style={styles.modalContainer}>
+                    <View style={styles.modelRecordContainer}>
+                        <View style = {styles.modelTitleContainer}>
+                            <Text style = {styles.textModelTitle}>Ghi chú</Text>
+                        </View>
+
+                        <View style = {styles.recordEditContainer}>
+                        <TextInput
+                            placeholder="Thêm ghi chú" style={styles.TextInput} 
+                            multiline={true}
+                            maxLength={50}
+                            value= {recordInput}
+                            onChangeText={text=>{
+                                setRecordIput(text)
+                                setTextLength(text.length)
+                            }}
+                            />
+                        </View>
+
+                        <View style = {{flexDirection: 'row', justifyContent: 'space-between'}}>
+                            <View></View>
+                            <Text>{textLength}/50</Text>
+                        </View>
+
+                        <View style ={styles.goiYContainer}>
+                            <Text style = {styles.textTitleGoiY}>Gợi ý</Text>
+                            <View style ={{flexDirection: 'row', paddingRight:10,alignItems:'center'}}>
+                            <ScrollView
+                                horizontal
+                                showsHorizontalScrollIndicator={false}
+                                >
+                                    <FlatList
+                                        data={data}
+                                        keyExtractor={(item) => item.id.toString()}
+                                        renderItem={renderRecord}
+                                        showsHorizontalScrollIndicator={false}
+                                        numColumns={8/2}
+                                />
+                                </ScrollView>
+                            </View>
+                        </View>
+                        <View style = {styles.lineStyle}></View>
+                        <View style = {{flexDirection: 'row', justifyContent: 'space-between',}}>
+                            <View></View>
+                           <TouchableOpacity onPress={() => {
+                            setModalVisible(false)
+                            setRecordIputUpdate(recordInput)
+                           }}>
+                           <View style = {{paddingRight: 10}}>
+                                <Text style = {{color: '#F7C33C', fontWeight: '600'}}>Xong</Text>
+                            </View>
+                           </TouchableOpacity>
+                        </View>
+                    </View>
+                   
+                </View>
+                
+            </Modal>
+        </View>
         
         <View style = {styles.footerContainer}>
             <View style = {styles.buttonContainer}>
@@ -170,18 +300,132 @@ const ProductDetail = (props,route) => {
 
                 <TouchableOpacity>
                 <View style = {styles.button}>
-                    <Text style = {styles.textButton}>Chọn {quantity*finalPrice}đ</Text>
+                    <Text style = {styles.textButton}>Chọn {formatCash((quantity*finalPrice).toString())}đ</Text>
                 </View>
                 </TouchableOpacity>
             </View>
         </View>
     </View>
   )
+
+//   <TouchableWithoutFeedback onPress={() => {}}>
+//   <Modal animationType={"slide"}
+//                transparent={true}
+//                visible={this.state.visibleModal}>
+
+//                   <View style={styles.modalContent}>
+//                       <Row />
+//                   </View>
+//         </Modal>
+// </TouchableWithoutFeedback>
 }
 
 export default ProductDetail
 
 const styles = StyleSheet.create({
+    textGoiY1:{
+        fontSize: 12,
+        fontWeight: '400'
+    },
+
+    goiY1Container:{
+       marginTop: 10,
+       paddingTop: 3,
+       paddingBottom: 3,
+       paddingLeft: 10,
+       paddingRight: 10,
+       backgroundColor: '#EEEEEE',
+       borderRadius: 7,
+       marginLeft: 10,
+    },
+
+    textTitleGoiY:{
+        fontWeight: '500',
+        fontSize: 16,
+    },
+
+    goiYContainer:{
+
+    },
+
+    TextInput:{
+        paddingRight:10,
+        paddingLeft:10,
+    },
+
+    recordEditContainer:{
+        paddingTop: 5,
+        marginTop: 20,
+        borderWidth: 1,
+        borderRadius: 7,
+        height: 60,
+        borderColor: '#9E9E9E'
+    },
+
+    textModelTitle:{
+        fontSize: 18,
+        fontWeight: '400'
+    },
+
+    modelTitleContainer:{
+        alignItems: 'center'
+    },
+
+    modelRecordContainer:{
+        paddingLeft: 10,
+        paddingRight: 10,
+        paddingTop: 20,
+        height: 300,
+        backgroundColor: 'white'
+    },
+
+    modalContainer:{
+         flex: 1,
+         justifyContent: 'center' 
+    },
+
+    recordText:{
+        color: '#9E9E9E'
+    },
+
+    recordTextContainer:{
+        justifyContent: 'center',
+        paddingLeft: 20,
+        borderRadius: 7,
+        height: 39,
+        borderWidth: 1,
+        borderColor: '#9E9E9E'
+    },
+
+    textTyChon:{
+        fontSize: 14,
+        fontWeight: '400',
+        color: 'rgba(0, 0, 0, 0.8)'
+    },
+
+    textTitle:{
+        fontSize: 18,
+        fontWeight: '500'
+    },
+    
+
+    textTitleContainer:{
+        
+    },
+    
+    
+
+    titleRecordContainer:{
+        paddingLeft: 10,
+    },  
+
+    recordContainer:{
+        marginTop: 10,
+        paddingTop: 20,
+        height: 140,
+        backgroundColor: 'white'
+    },
+
     textQuantity:{
         color: "#581B00",
         fontWeight: "700",
@@ -276,10 +520,11 @@ const styles = StyleSheet.create({
     },
 
     lineStyle:{
+        opacity: 0.5,
         bottom: 25,
-        marginTop: 30,
-        borderWidth: 0.5,
-        borderColor:'#C9C2C0',
+        marginTop: 40,
+        borderWidth: 0.3,
+        borderColor:'#9E9E9E',
     },
     fleeling:{
         marginLeft: 10,
