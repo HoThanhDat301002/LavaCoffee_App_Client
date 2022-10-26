@@ -20,7 +20,7 @@ export const ProductNavigation = () => {
     const getTabBarVisibility = (route:any)=>{
         const routeName = getFocusedRouteNameFromRoute(route);
         // console.log(routeName)
-        if(routeName?.includes('DetailNews') || routeName?.includes('ProductDetail')){
+        if(routeName?.includes('DetailNews') || routeName?.includes('ProductDetail') ||routeName?.includes('CartProduct')){
           return 'none'
         }
         return 'flex'

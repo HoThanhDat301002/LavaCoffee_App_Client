@@ -4,7 +4,9 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { height } from './DetailNews';
 import productFeatured from '../types/dataFeaturedProducts'
 import { Ionicons } from '@expo/vector-icons'; 
+import('../mobx/cart_store')
 import Modal from "react-native-modal";
+import { cartStore,CartItem } from '../mobx/cart_store';
 export const data = [
     {
         id: 10,
@@ -57,9 +59,18 @@ const ProductDetail = (props,route) => {
         })
       }
 
+
+      const addToCart = (items:CartItem) => {
+        if(item){
+        cartStore.addItem(items)
+        }
+   }
+
       if(!item){
         return null
       }
+
+
     //   console.log('=====>', qwe)
     //  const renderGalleries = (e) =>{
     //     console.log(e.thumbnail)
@@ -298,7 +309,18 @@ const ProductDetail = (props,route) => {
                     </TouchableOpacity>
                 </View>
 
-                <TouchableOpacity>
+                <TouchableOpacity 
+                    onPress={ () =>  {
+                        if(item){
+                            const itemDetail: CartItem = {
+                                product: item,
+                                quantity: quantity,
+                                price: finalPrice
+                            }
+                            addToCart(itemDetail)
+                        }
+                    }}
+                >
                 <View style = {styles.button}>
                     <Text style = {styles.textButton}>Chọn {formatCash((quantity*finalPrice).toString())}đ</Text>
                 </View>

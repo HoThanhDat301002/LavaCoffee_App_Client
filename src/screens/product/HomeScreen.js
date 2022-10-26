@@ -9,7 +9,6 @@ import news from '../types/dataNews'
 
 const HomeScreen = (props) => {
   const {navigation} = props
-  const [date, setDate] = useState(0)
   // console.log(date)
   const formatCash = (str) => {
     return str.split('').reverse().reduce((prev, next, index) => {
@@ -47,12 +46,12 @@ const HomeScreen = (props) => {
         </View>
           <View style ={{flexDirection: 'row',paddingRight: 20,}}>
             <View style={styles.iconCartContainer}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={()=> navigation.navigate('CartProduct')}>
               <AntDesign name="shoppingcart" size={24} color="black" />
             </TouchableOpacity>
           </View>
           <View style={styles.iconNotifyContainer}>
-            <TouchableOpacity onPress={() => setDate(new Date)}>
+            <TouchableOpacity>
               <Ionicons name="ios-notifications-outline" size={24} color="black" />
             </TouchableOpacity>
           </View>

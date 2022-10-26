@@ -5,6 +5,7 @@ import { UserNavigation } from './src/screens/user/UserNavigation';
 
 import * as Sentry from '@sentry/react-native';
 import { Navigation } from './src/screens/Navigation/Navigation';
+import { Provider } from 'mobx-react';
 
 // Sentry.init({ 
 //   dsn: "https://922fec219ddc4677976b265ef14574d1@o1431293.ingest.sentry.io/4503894764158976",
@@ -13,9 +14,11 @@ import { Navigation } from './src/screens/Navigation/Navigation';
 
 export default function App() {
   return (
-    <Navigation>
-      <UserNavigation/>
-    </Navigation>
+    <Provider>
+      <Navigation>
+        <UserNavigation/>
+      </Navigation>
+    </Provider>
   );
 }
 
