@@ -2,6 +2,7 @@ import { StyleSheet, Text, View,TouchableOpacity, Image, FlatList,ScrollView } f
 import React,{useState} from 'react'
 import { Ionicons } from '@expo/vector-icons'; 
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
+import { MaterialIcons } from '@expo/vector-icons'; 
 import { cartStore,CartItem } from '../mobx/cart_store';
 import { observer } from 'mobx-react';
 import { ListRenderItemInfo } from "react-native";
@@ -38,7 +39,7 @@ const CartProduct = (props) => {
         >
            <View style = {styles.titleCartContainer}>
                 <View style = {{flexDirection: 'row', alignItems: 'center',}}>
-                    <Image source={require("../../assets/shopping-cart.png")} style = {styles.imageTitle}/>
+                    <Image source={require("../../assets/shopping-cart_01.png")} style = {styles.imageTitle}/>
                     <Text style = {styles.titleText}>Sản phẩm đã chọn</Text>
                 </View>
                 <View></View>
@@ -51,7 +52,7 @@ const CartProduct = (props) => {
                 } */}
             </View>
 
-            <View style ={{paddingLeft: 10, paddingRight: 10, paddingTop: 10, }}>
+            <View style ={{paddingLeft: 10, paddingRight: 10, paddingTop: 10, paddingBottom: 10,}}>
                     {/* <View style={styles.listcartContainer}>
                     <FlatList
                         data={cartStore.items}
@@ -108,16 +109,25 @@ const CartProduct = (props) => {
             </View>
         </ScrollView>
       
-      <View style = {{backgroundColor: 'white', zIndex: 10}}>
-            <View style={styles.buttonOrderContainer}>
-                <TouchableOpacity>
-                    <View style={[ styles.buttonOrder]}>
-                        <Text style={styles.textButton}>{cartStore.count} sản phẩm</Text>
-                        <Text style={styles.textButton}>Trang thanh toán</Text>
-                        <Text style={styles.textButton}>{formatCash(cartStore.CalculateTotal.toString())}đ</Text>
+      <View style = {{backgroundColor: 'white'}}>
+        
+        <View style ={{ paddingTop: 10, }}>
+           <View style ={{paddingLeft: 10, paddingRight: 20, flexDirection: 'row', justifyContent: 'space-between'}}>
+                <Text style ={{color: 'black', fontSize: 18, fontWeight: '700'}}>Tổng tạm tính</Text>
+                <Text style ={{color: '#CD6600', fontSize: 18, fontWeight: '700'}}>{formatCash(cartStore.CalculateTotal.toString())}đ</Text>
+           </View>
+        </View>
+        <View style={styles.buttonOrderContainer}>
+            <TouchableOpacity>
+                <View style={[ styles.buttonOrder]}>
+                    <View></View>
+                    <View><Text style={styles.textButton}>Thanh toán</Text></View>
+                    <View>
+                    <MaterialIcons name="navigate-next" size={24} color="white" />
                     </View>
-                </TouchableOpacity>
-            </View>
+                </View>
+            </TouchableOpacity>
+        </View>
       </View>
     </View>
   )
@@ -135,11 +145,10 @@ const styles = StyleSheet.create({
 
     textButton:{
         color: "white",
-        fontWeight: "700",
-        lineHeight: 24,
         fontSize: 16,
         fontStyle: "normal",
         flexGrow: 0,
+        fontWeight: '700'
     },
 
     buttonOrder:{
@@ -148,7 +157,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         width: 374,
         height: 50,
-        backgroundColor: "#F7C33C",
+        backgroundColor: "#CD6600",
         borderRadius: 7,
         justifyContent: 'space-between',
         alignItems: "center",
@@ -189,32 +198,25 @@ const styles = StyleSheet.create({
     },
 
     textQuantity:{
-        color: "#581B00",
+        color: "black",
         fontWeight: "700",
         lineHeight: 24,
         fontSize: 16,
         fontStyle: "normal",
     },
     textTru:{
-        color: "#581B00",
+        color: "white",
         fontWeight: "700",
-        lineHeight: 24,
         fontSize: 16,
         fontStyle: "normal",
     },
     
     textCong:{
-        color: "#581B00",
-        fontWeight: "700",
-        lineHeight: 24,
         fontSize: 16,
+        color: "white",
+        fontWeight: "700",
         fontStyle: "normal",
     },
-    color: "#581B00",
-        fontWeight: "700",
-        lineHeight: 24,
-        fontSize: 16,
-        fontStyle: "normal",
     
     quantity:{
         justifyContent: 'center',
@@ -229,7 +231,7 @@ const styles = StyleSheet.create({
         borderRadius: 7,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#F7C33C'
+        backgroundColor: '#CD6600'
     },
     congQuantity:{
         width: 25,
@@ -237,7 +239,7 @@ const styles = StyleSheet.create({
         borderRadius: 7,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#F7C33C'
+        backgroundColor: '#CD6600'
     },
 
     quantityContainer:{
@@ -255,7 +257,15 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        backgroundColor: 'white'
+        backgroundColor: 'white',
+        shadowColor: "#000",
+          shadowOffset: {
+            width: 0,
+            height: 1
+          },
+          shadowOpacity: 0.15,
+          shadowRadius: 7,
+          elevation: 1
     },
 
     titleText:{

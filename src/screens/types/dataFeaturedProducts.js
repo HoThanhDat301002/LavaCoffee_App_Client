@@ -1,7 +1,7 @@
 const productFeatured = [
     {
       id: 1,
-      name: "Cà Phê Sửa Đá",
+      name: "Cà Phê Sữa Đá",
       price: 30000,
       thumbnail: "https://product.hstatic.net/1000075078/product/1639377738_ca-phe-sua-da_721d7068e01045b99542243abe413080_large.jpg",
       describe: "Cà phê Đắk Lắk nguyên chất được pha phin truyền thống kết hợp với sữa đặc tạo nên hương vị đậm đà, hài hòa giữa vị ngọt đầu lưỡi và vị đắng thanh thoát nơi hậu vị.",

@@ -25,10 +25,11 @@ export class CartProduct {
     if (findProduct) {
         findProduct.quantity += item.quantity
     //   console.log('Update cart', this.items)
+    ToastAndroid.show("Cập nhật vào giỏ hàng thành công", ToastAndroid.SHORT);
     }
      else {
       this.items.push(item)
-      
+      ToastAndroid.show("Thêm vào giỏ hàng thành công", ToastAndroid.SHORT);
     //   console.log('Add cart quantity', this.items)
     }
   }

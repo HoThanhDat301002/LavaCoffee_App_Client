@@ -6,6 +6,8 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import CarouselCards from './CarouselCards';
 import productFeatured from '../types/dataFeaturedProducts'
 import news from '../types/dataNews'
+import { cartStore } from '../mobx/cart_store';
+import { observer } from 'mobx-react';
 
 const HomeScreen = (props) => {
   const {navigation} = props
@@ -45,11 +47,24 @@ const HomeScreen = (props) => {
           <Text style = {styles.textWebcome}>Chào Jen !</Text>
         </View>
           <View style ={{flexDirection: 'row',paddingRight: 20,}}>
-            <View style={styles.iconCartContainer}>
-            <TouchableOpacity onPress={()=> navigation.navigate('CartProduct')}>
-              <AntDesign name="shoppingcart" size={24} color="black" />
-            </TouchableOpacity>
-          </View>
+                {
+                    cartStore.count > 0 ?
+                    <View style={styles.iconCartContainer}>
+                        <TouchableOpacity onPress={()=> navigation.navigate('CartProduct')}>
+                            <View style={{paddingRight: 20}}>
+                                <View style={styles.countCartContainer}>
+                                    <Text style ={styles.textCountCart}>{cartStore.count.toString()}</Text>
+                                </View>
+                            </View>
+                            <AntDesign name="shoppingcart" size={25} color="black" />
+                        </TouchableOpacity>
+                    </View> :
+                    <View style={styles.iconCartContainer}>
+                        <TouchableOpacity onPress={()=> navigation.navigate('CartProduct')}>
+                        <AntDesign name="shoppingcart" size={25} color="black" />
+                        </TouchableOpacity>
+                    </View>
+                }
           <View style={styles.iconNotifyContainer}>
             <TouchableOpacity>
               <Ionicons name="ios-notifications-outline" size={24} color="black" />
@@ -115,7 +130,7 @@ const HomeScreen = (props) => {
   )
 }
 
-export default HomeScreen
+export default observer(HomeScreen)
 
 const styles = StyleSheet.create({
   textDateNews:{
@@ -280,6 +295,23 @@ textNameNewsContainer:{
     borderRadius: 20,
   },
 
+  textCountCart:{
+    color: 'white',
+    fontSize:10,
+    fontWeight: '900'
+},
+
+  countCartContainer:{
+      width: 15,
+      height: 15,
+      borderRadius: 20,
+      position: 'absolute',
+      alignItems: 'center',
+      bottom: -4,
+      left: 15,
+      backgroundColor: 'red'  
+  },
+
   iconCartContainer:{
     marginRight: 10,
     width: 35,
@@ -304,7 +336,7 @@ textNameNewsContainer:{
   headerContainer: {
     width: "100%",
     height: 160,
-    backgroundColor: "#F7C33C",
+    backgroundColor: "#FFA500",
   },
 
   container: {

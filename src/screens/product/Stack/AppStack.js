@@ -5,6 +5,9 @@ import DetailNews from '../../product/DetailNews';
 import HomeScreen from '../../product/HomeScreen';
 import ProductDetail from '../ProductDetail';
 import CartProduct from '../CartProduct';
+import ProfileScreen from '../ProfileScreen';
+import Contact from '../Contact';
+import Feedback from '../Feedback';
 const RootStack = createStackNavigator();
 
 export const HomeStack = () => {
@@ -15,6 +18,16 @@ export const HomeStack = () => {
                 <RootStack.Screen name="ProductDetail" component={ProductDetail} />
                 <RootStack.Screen name="CartProduct" component={CartProduct} />
             </RootStack.Navigator>
+    )
+}
+
+export const AccountStack = () => {
+    return (
+        <RootStack.Navigator screenOptions={{ headerShown: false }} >
+            <RootStack.Screen name='ProfileScreen' component={ProfileScreen} />
+            <RootStack.Screen name='Contact' component={Contact} />
+            <RootStack.Screen name='Feedback' component={Feedback} />
+        </RootStack.Navigator>
     )
 }
 

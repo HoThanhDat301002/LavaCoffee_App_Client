@@ -7,6 +7,8 @@ import { Ionicons } from '@expo/vector-icons';
 import('../mobx/cart_store')
 import Modal from "react-native-modal";
 import { cartStore,CartItem } from '../mobx/cart_store';
+import { AntDesign } from '@expo/vector-icons';
+import { observer } from 'mobx-react';
 export const data = [
     {
         id: 10,
@@ -37,6 +39,7 @@ const ProductDetail = (props,route) => {
     const [heart, setHeart] = useState(false)
     const [qwe, setQwe] = useState()
     const [modalVisible, setModalVisible] = useState(false);
+    const [modalVisibleCart, setModalVisibleCart] = useState(true);
     const [quantity, setQuatity] = useState(1);
     const [recordInput, setRecordIput] = useState('');
     const [recordInputUpdate, setRecordIputUpdate] = useState('');
@@ -106,8 +109,32 @@ const ProductDetail = (props,route) => {
 
   return (
     <View style = {styles.container}>
-      <View style ={styles.headerContainer}>
-      </View>
+        <View style = {styles.headerContainer}>
+            <View style= {styles.itemHeaderContainer}>
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <Ionicons name="arrow-back" size={24} color="black" />
+                </TouchableOpacity>
+                <Text style={styles.textTitle}>Chi tiết sản phẩm</Text>
+                {
+                    cartStore.count > 0 ?
+                    <View style={styles.iconCartContainer}>
+                        <TouchableOpacity onPress={()=> navigation.navigate('CartProduct')}>
+                            <View style={{paddingRight: 20}}>
+                                <View style={styles.countCartContainer}>
+                                    <Text style ={styles.textCountCart}>{cartStore.count.toString()}</Text>
+                                </View>
+                            </View>
+                            <AntDesign name="shoppingcart" size={25} color="black" />
+                        </TouchableOpacity>
+                    </View> :
+                    <View style={styles.iconCartContainer}>
+                        <TouchableOpacity onPress={()=> navigation.navigate('CartProduct')}>
+                        <AntDesign name="shoppingcart" size={25} color="black" />
+                        </TouchableOpacity>
+                    </View>
+                }
+            </View>
+        </View>
         <ScrollView
         >
             <ScrollView
@@ -290,7 +317,7 @@ const ProductDetail = (props,route) => {
                 
             </Modal>
         </View>
-        
+  
         <View style = {styles.footerContainer}>
             <View style = {styles.buttonContainer}>
                 <View style = {styles.quantityContainer}>
@@ -330,21 +357,12 @@ const ProductDetail = (props,route) => {
     </View>
   )
 
-//   <TouchableWithoutFeedback onPress={() => {}}>
-//   <Modal animationType={"slide"}
-//                transparent={true}
-//                visible={this.state.visibleModal}>
-
-//                   <View style={styles.modalContent}>
-//                       <Row />
-//                   </View>
-//         </Modal>
-// </TouchableWithoutFeedback>
 }
 
-export default ProductDetail
+export default observer(ProductDetail)
 
 const styles = StyleSheet.create({
+    
     textGoiY1:{
         fontSize: 12,
         fontWeight: '400'
@@ -456,7 +474,7 @@ const styles = StyleSheet.create({
         fontStyle: "normal",
     },
     textTru:{
-        color: "#581B00",
+        color: "white",
         fontWeight: "700",
         lineHeight: 24,
         fontSize: 16,
@@ -464,17 +482,12 @@ const styles = StyleSheet.create({
     },
     
     textCong:{
-        color: "#581B00",
+        color: "white",
         fontWeight: "700",
         lineHeight: 24,
         fontSize: 16,
         fontStyle: "normal",
     },
-    color: "#581B00",
-        fontWeight: "700",
-        lineHeight: 24,
-        fontSize: 16,
-        fontStyle: "normal",
     
     quantity:{
         justifyContent: 'center',
@@ -489,7 +502,7 @@ const styles = StyleSheet.create({
         borderRadius: 25,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#F7C33C'
+        backgroundColor: '#CD6600'
     },
     congQuantity:{
         width: 30,
@@ -497,11 +510,11 @@ const styles = StyleSheet.create({
         borderRadius: 25,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#F7C33C'
+        backgroundColor: '#CD6600'
     },
 
     textButton:{
-        color: "#581B00",
+        color: "white",
         fontWeight: "700",
         lineHeight: 24,
         fontSize: 16,
@@ -511,7 +524,7 @@ const styles = StyleSheet.create({
     button:{
         width: 189,
         height: 50,
-        backgroundColor: '#F7C33C',
+        backgroundColor: '#CD6600',
         borderRadius: 12,
         justifyContent: 'center',
         alignItems: 'center',
@@ -596,6 +609,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         paddingTop: 10, 
         paddingLeft: 10,
+        paddingBottom: 10
     },
 
     SizeContainer:{
@@ -650,9 +664,77 @@ const styles = StyleSheet.create({
         flexDirection: 'row'
     },
 
-    headerContainer:{   
-        height: 35,
-        backgroundColor: '#F7C33C'
+    titleText:{
+        marginLeft: 10,
+        fontSize: 18,
+        fontStyle: "normal",
+        fontWeight: "700",
+        color: "#231F20",
+        lineHeight: 24,
+    },
+
+    imageTitle:{
+        width: 25,
+        height: 25,
+    },
+
+    titleCartContainer:{
+        paddingTop: 20,
+        paddingRight: 10,
+        paddingLeft: 10,
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        flexDirection: 'row'
+    },
+
+    textCountCart:{
+        color: 'white',
+        fontSize:10,
+        fontWeight: '900'
+    },
+
+    countCartContainer:{
+        width: 15,
+        height: 15,
+        borderRadius: 20,
+        position: 'absolute',
+        alignItems: 'center',
+        bottom: -4,
+        left: 15,
+        backgroundColor: 'red'  
+    },
+    
+    iconCartContainer:{
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+
+    textTitle:{
+        fontSize: 16,
+        fontWeight: '600'
+    },
+    
+    itemHeaderContainer:{
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingTop: 30,
+        paddingLeft: 20,
+        paddingRight: 20,
+    },
+    
+    headerContainer:{
+        width: '100%',
+        height: 85, 
+        backgroundColor: 'white',
+        shadowColor: "#000",
+        shadowOffset: {
+        width: 0,
+        height: 1
+        },
+        shadowOpacity: 0.15,
+        elevation: 2,
+        justifyContent: 'center',
     },
 
     container:{

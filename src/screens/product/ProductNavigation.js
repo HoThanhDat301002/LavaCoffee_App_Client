@@ -8,7 +8,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons'; 
 const Tab = createBottomTabNavigator();
 import {getFocusedRouteNameFromRoute} from "@react-navigation/native"
-import {HomeStack} from '../product/Stack/AppStack';
+import {HomeStack, AccountStack} from '../product/Stack/AppStack';
 import EndowScreen from './EndowScreen';
 import ProductScreen from './ProductScreen';
 import ProfileScreen from './ProfileScreen';
@@ -17,6 +17,7 @@ import ProfileScreen from './ProfileScreen';
 
 
 export const ProductNavigation = () => {
+
     const getTabBarVisibility = (route:any)=>{
         const routeName = getFocusedRouteNameFromRoute(route);
         // console.log(routeName)
@@ -25,12 +26,13 @@ export const ProductNavigation = () => {
         }
         return 'flex'
       }
+      
     return (
         <Tab.Navigator
             screenOptions={({ route }) => ({
                 tabBarStyle: { backgroundColor: 'white', height: 61 },
                 tabBarInactiveTintColor: '#581B00',
-                tabBarActiveTintColor: '#F7C33C',
+                tabBarActiveTintColor: '#CD6600',
                 tabBarLabelPosition: 'below-icon',
                 tabBarLabelStyle: {paddingBottom: 5,display:getTabBarVisibility(route)},
                 tabBarIcon: ({ color }) => {
@@ -62,7 +64,7 @@ export const ProductNavigation = () => {
                 tabBarStyle:{display:getTabBarVisibility(route)},
             })}
             />
-            <Tab.Screen name="Tài Khoản" component={ProfileScreen} 
+            <Tab.Screen name="Tài Khoản" component={AccountStack} 
                 options={({route})=>({
                     tabBarStyle:{display:getTabBarVisibility(route)},
                 })}
