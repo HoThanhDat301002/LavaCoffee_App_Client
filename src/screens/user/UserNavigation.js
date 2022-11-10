@@ -1,20 +1,18 @@
-import React from 'react';
+import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack';
-
-import Login from './screens/Login';
-import Welcome from './screens/Welcome';
-import Register from './screens/Register';
-
 const Stack = createStackNavigator();
+import SplashSreen from './SplashSreen';
+import  {Login}  from '../user/Login';
+import  Register  from '../user/Register';
 
-const UserNavigation = () => {
+export const UserNavigation = (props) => {
     return (
-        <Stack.Navigator screenOptions={{ headerShown: false }} >
-            <Stack.Screen name='Welcome' component={Welcome} />
-            <Stack.Screen name='Login' component={Login} />
-            <Stack.Screen name='Register' component={Register} />
+        <Stack.Navigator screenOptions={{headerShown: false}}>
+            <Stack.Screen name="SplashSreen" component ={SplashSreen} />
+            <Stack.Screen name="Login" component ={Login} />
+            <Stack.Screen name="Register" component ={Register} />
         </Stack.Navigator>
+       
     )
 }
 
-export default UserNavigation
