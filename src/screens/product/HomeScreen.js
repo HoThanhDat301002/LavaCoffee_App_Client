@@ -97,7 +97,7 @@ const HomeScreen = (props) => {
           <Image style={{width:25,height:25}} source={require('../../assets/newspaper.png')}/>
           <Text style={styles.textTitleNews}>Khám phá thêm</Text>
         </View>
-        <View style={{flexDirection: 'row',flexWrap: 'wrap',justifyContent: 'space-between', paddingLeft: 20, paddingRight: 20}}>
+        <View style={{flexDirection: 'row',flexWrap: 'wrap',justifyContent: 'space-between', paddingLeft: 25, paddingRight: 15}}>
         {
             news.map(((item) => {
             return(

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Pressable } from 'react-native';
 import React from 'react';
 import { useFonts, Montserrat_600SemiBold, Montserrat_500Medium } from '@expo-google-fonts/montserrat';
 import { Entypo, Octicons, Ionicons, SimpleLineIcons } from '@expo/vector-icons';
@@ -27,21 +27,21 @@ const ProfileScreen = (props) => {
                             <Text style={styles.listTittle}>Hỗ trợ</Text>
                         </View>
                         <View style={styles.listBodyContainer}>
-                            <TouchableOpacity style={styles.listBody} onPress={() => navigation.navigate('BuyingHistory')}>
+                            <Pressable style={styles.listBody} onPress={() => navigation.navigate('BuyingHistory')}>
                                 <View style={styles.listBodyTextContainer}>
                                     <Octicons name="checklist" size={18} color="black" />
                                     <Text style={styles.listBodyText}>Lịch sử đơn hàng</Text>
                                 </View>
                                 <Entypo name="chevron-small-right" size={24} color="black" />
-                            </TouchableOpacity>
+                            </Pressable>
                             <View style={styles.line}></View>
-                            <TouchableOpacity style={styles.listBody} onPress={() => navigation.navigate('Contact')}>
+                            <Pressable style={styles.listBody} onPress={() => navigation.navigate('Contact')}>
                                 <View style={styles.listBodyTextContainer}>
                                     <Ionicons name="chatbox-outline" size={18} color="black" />
                                     <Text style={styles.listBodyText}>Liên hệ và góp ý</Text>
                                 </View>
                                 <Entypo name="chevron-small-right" size={24} color="black" />
-                            </TouchableOpacity>
+                            </Pressable>
                         </View>
                     </View>
                     <View style={styles.listContainer}>
@@ -49,21 +49,21 @@ const ProfileScreen = (props) => {
                             <Text style={styles.listTittle}>Tài khoản</Text>
                         </View>
                         <View style={styles.listBodyContainer}>
-                            <View style={styles.listBody}>
+                            <Pressable style={styles.listBody} onPress={() => navigation.navigate('UserInformation')}>
                                 <View style={styles.listBodyTextContainer}>
                                     <Ionicons name="ios-person-outline" size={18} color="black" />
                                     <Text style={styles.listBodyText}>Thông tin cá nhân</Text>
                                 </View>
                                 <Entypo name="chevron-small-right" size={24} color="black" />
-                            </View>
+                            </Pressable>
                             <View style={styles.line}></View>
-                            <View style={styles.listBody}>
+                            <Pressable onPress={() => navigation.navigate('AddressList')} style={styles.listBody}>
                                 <View style={styles.listBodyTextContainer}>
                                     <Ionicons name="pricetag-outline" size={18} color="black" />
                                     <Text style={styles.listBodyText}>Địa chỉ đã lưu</Text>
                                 </View>
                                 <Entypo name="chevron-small-right" size={24} color="black" />
-                            </View>
+                            </Pressable>
                             <View style={styles.line}></View>
                             <View style={styles.listBody}>
                                 <View style={styles.listBodyTextContainer}>

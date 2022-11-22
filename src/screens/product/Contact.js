@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Alert, Button, Linking, } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Pressable, Alert, Button, Linking, } from 'react-native';
 import React, { useState, useEffect, useCallback } from 'react';
 import { useFonts, Montserrat_600SemiBold, Montserrat_500Medium } from '@expo-google-fonts/montserrat';
 import { Entypo, Feather, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
@@ -71,52 +71,52 @@ const Contact = (props) => {
 
     return (
         <View>
-            <View style={styles.appBarContainer}>
-                <Entypo onPress={() => navigation.goBack()} style={styles.back} name="chevron-left" size={18} color="black" />
+            <Pressable onPress={() => navigation.goBack()} style={styles.appBarContainer}>
+                <Entypo style={styles.back} name="chevron-left" size={18} color="black" />
                 <Text style={styles.appBar}>Liên hệ và góp ý</Text>
-            </View>
+            </Pressable>
             <View style={styles.space}></View>
             <ScrollView bounces={false} contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
                 <View style={styles.container}>
                     <View style={styles.list}>
-                        <TouchableOpacity onPress={triggerCall} style={styles.listContainer}>
+                        <Pressable onPress={triggerCall} style={styles.listContainer}>
                             <Feather name="phone" size={18} color="black" />
                             <View style={styles.listTextContainer}>
                                 <Text style={styles.listText}>Tổng đài</Text>
                                 <Text style={[styles.listText, { paddingTop: 5 }]}>{phoneNumber}</Text>
                             </View>
-                        </TouchableOpacity>
+                        </Pressable>
                         <View style={styles.line}></View>
-                        <TouchableOpacity onPress={sendMail} style={styles.listContainer}>
+                        <Pressable onPress={sendMail} style={styles.listContainer}>
                             <Feather name="mail" size={18} color="black" />
                             <View style={styles.listTextContainer}>
                                 <Text style={styles.listText}>Email</Text>
                                 <Text style={[styles.listText, { paddingTop: 5 }]}>caodang@fpt.edu.vn</Text>
                             </View>
-                        </TouchableOpacity>
+                        </Pressable>
                         <View style={styles.line}></View>
-                        <TouchableOpacity onPress={openURI} style={styles.listContainer}>
+                        <Pressable onPress={openURI} style={styles.listContainer}>
                             <FontAwesome5 name="globe-asia" size={18} color="black" />
                             <View style={styles.listTextContainer}>
                                 <Text style={styles.listText}>Website</Text>
                                 <Text style={[styles.listText, { paddingTop: 5 }]}>caodang.fpt.edu.vn</Text>
                             </View>
-                        </TouchableOpacity>
+                        </Pressable>
                         <View style={styles.line}></View>
-                        <TouchableOpacity onPress={openFacebook} style={styles.listContainer}>
+                        <Pressable onPress={openFacebook} style={styles.listContainer}>
                             <Entypo name="facebook" size={18} color="black" />
                             <View style={styles.listTextContainer}>
                                 <Text style={styles.listText}>Facebook</Text>
                                 <Text style={[styles.listText, { paddingTop: 5 }]}>facebook.com/caodang.fptpoly</Text>
                             </View>
-                        </TouchableOpacity>
+                        </Pressable>
                         <View style={styles.line}></View>
-                        <TouchableOpacity onPress={() => navigation.navigate('Feedback')} style={styles.listContainer}>
+                        <Pressable onPress={() => navigation.navigate('Feedback')} style={styles.listContainer}>
                             <MaterialCommunityIcons name="comment-alert-outline" size={18} color="black" />
                             <View style={styles.listTextContainer}>
                                 <Text style={styles.listText}>Gửi góp ý về ứng dụng</Text>
                             </View>
-                        </TouchableOpacity>
+                        </Pressable>
                     </View>
                 </View>
             </ScrollView>

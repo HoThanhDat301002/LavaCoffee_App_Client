@@ -9,6 +9,10 @@ import ProfileScreen from '../ProfileScreen';
 import Contact from '../Contact';
 import Feedback from '../Feedback';
 import ProductScreen from '../ProductScreen';
+import BuyingHistory from '../BuyingHistory';
+import UserInformation from '../UserInformation';
+import AddressList from '../AddressList';
+
 const RootStack = createStackNavigator();
 
 export const HomeStack = () => {
@@ -38,6 +42,9 @@ export const AccountStack = () => {
             <RootStack.Screen name='ProfileScreen' component={ProfileScreen} />
             <RootStack.Screen name='Contact' component={Contact} />
             <RootStack.Screen name='Feedback' component={Feedback} />
+            <RootStack.Screen name='BuyingHistory' component={BuyingHistory} />
+            <RootStack.Screen name='UserInformation' component={UserInformation} />
+            <RootStack.Screen name='AddressList' component={AddressList} />
         </RootStack.Navigator>
     )
 }

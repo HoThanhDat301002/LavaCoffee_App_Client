@@ -71,7 +71,7 @@ const CartProduct = (props) => {
                                                 <Image source={{uri: e.product.thumbnail}} style = {{width: 70, height: 70, borderRadius: 7}}/>
                                             </View>
                                             <View style = {{paddingLeft: 10}}>
-                                                <Text style={styles.textName}>{e.product.name}</Text>
+                                                <Text numberOfLines={2} style={styles.textName}>{e.product.name}</Text>
                                                 <Text style={styles.textPrice}>{formatCash(e.price.toString())}đ</Text>
                                                 {
                                                     e.price == 39000 ? <Text style={styles.textPrice}>Lớn</Text> :
