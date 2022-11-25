@@ -1,0 +1,7 @@
+{
+    // Babel >= 7.13.0 (https://babeljs.io/docs/en/assumptions)
+    "plugins": [
+        ["@babel/plugin-proposal-decorators", { "version": "legacy" }],
+        "@babel/plugin-proposal-class-properties"
+      ]
+}
