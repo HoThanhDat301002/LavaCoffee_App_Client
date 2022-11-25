@@ -11,7 +11,7 @@ import {getFocusedRouteNameFromRoute} from "@react-navigation/native"
 import {HomeStack, AccountStack} from '../product/Stack/AppStack';
 import EndowScreen from './EndowScreen';
 import { ProductStack } from '../product/Stack/AppStack';
-import ProfileScreen from './ProfileScreen';
+import ProfileScreen from './Profile/ProfileScreen';
 
 
 

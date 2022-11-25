@@ -5,7 +5,7 @@ import { UserNavigation } from '../user/UserNavigation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const Navigation =  () => {
-  const [isLoggedIn, SetIsLoggedIn] = useState(true);
+  const [isLoggedIn, SetIsLoggedIn] = useState(false);
     return ( 
         <NavigationContainer >
         {
