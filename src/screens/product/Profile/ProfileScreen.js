@@ -1,11 +1,11 @@
-import { StyleSheet, Text, View, ScrollView, Pressable } from 'react-native';
-import React from 'react';
+import { StyleSheet, Text, View, ScrollView, Pressable,TouchableOpacity } from 'react-native';
+import React,{useContext} from 'react';
 import { useFonts, Montserrat_600SemiBold, Montserrat_500Medium } from '@expo-google-fonts/montserrat';
 import { Entypo, Octicons, Ionicons, SimpleLineIcons, AntDesign } from '@expo/vector-icons';
-
+import { UserContext } from '../../user/UserContext';
 const ProfileScreen = (props) => {
     const { navigation } = props;
-
+    const { onPostLogout } = useContext(UserContext);
     let [fontsLoaded, error] = useFonts({
         Montserrat_600SemiBold,
         Montserrat_500Medium
@@ -14,6 +14,11 @@ const ProfileScreen = (props) => {
     if (!fontsLoaded) {
         return null;
     }
+
+    const postLogout = async () => {
+        const res = onPostLogout();
+    
+      };
 
     return (
         <View>
@@ -64,21 +69,23 @@ const ProfileScreen = (props) => {
                                 <Entypo name="chevron-small-right" size={24} color="black" />
                             </Pressable>
                             <View style={styles.line}></View>
-                            <Pressable onPress={() => navigation.navigate('AddressList')} style={styles.listBody}>
+                            <Pressable onPress={() => navigation.navigate('UserConfirm')} style={styles.listBody}>
                                 <View style={styles.listBodyTextContainer}>
-                                    <Ionicons name="pricetag-outline" size={18} color="black" />
-                                    <Text style={styles.listBodyText}>Địa chỉ đã lưu</Text>
+                                <Ionicons name="ios-key-outline" size={18} color="black" />
+                                    <Text style={styles.listBodyText}>Thay đổi mật khẩu</Text>
                                 </View>
                                 <Entypo name="chevron-small-right" size={24} color="black" />
                             </Pressable>
                             <View style={styles.line}></View>
-                            <View style={styles.listBody}>
-                                <View style={styles.listBodyTextContainer}>
-                                    <SimpleLineIcons name="logout" size={18} color="black" />
-                                    <Text style={styles.listBodyText}>Đăng xuất</Text>
+                            <TouchableOpacity onPress={postLogout}>
+                                <View style={styles.listBody}>
+                                    <View style={styles.listBodyTextContainer}>
+                                        <SimpleLineIcons name="logout" size={18} color="black" />
+                                        <Text style={styles.listBodyText}>Đăng xuất</Text>
+                                    </View>
+                                    <Entypo name="chevron-small-right" size={24} color="black" />
                                 </View>
-                                <Entypo name="chevron-small-right" size={24} color="black" />
-                            </View>
+                            </TouchableOpacity>
                         </View>
                     </View>
                 </View>

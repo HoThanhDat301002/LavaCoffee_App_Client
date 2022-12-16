@@ -20,13 +20,15 @@ const EndowScreen = (props) => {
 
   const renderItem = (item) => {
     return (
-      <View style={styles.endowContainer}>
+      <Pressable onPress={()=> navigation.navigate("DetailEndow")}>
+        <View style={styles.endowContainer}>
         <Image style={styles.endowImage} source={{ uri: item.item.image }} resizeMode={'cover'} />
         <View style={styles.endowTextContainer}>
           <Text style={styles.endowText}>{item.item.content}</Text>
           <Text style={styles.endowText}>Hết hạn {item.item.date}</Text>
         </View>
       </View>
+      </Pressable>
     )
   }
 

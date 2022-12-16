@@ -7,7 +7,7 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./src/assets/logo.jpg",
+      "image": "./src/assets/webcom-logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#FFFFFF"
     },

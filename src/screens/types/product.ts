@@ -1,22 +1,17 @@
 export interface Product {
-    id: number 
+    _id: string 
     name: string
     price: number
-    describe: string
-    thumbnail: string
-    productGalleries: BookGallery[]
-    size: Size[]
+    description: string 
+    category_id: string 
+    image: image[]
+    released: Date,
     }
 
 
-export interface BookGallery {
+export interface image {
     id: number 
     thumbnail: string
 }
 
-export interface Size {
-    id: number 
-    title: string
-    price: number
-}
         

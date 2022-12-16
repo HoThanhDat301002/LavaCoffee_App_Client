@@ -1,14 +1,13 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, FlatList, Pressable, Button, TouchableWithoutFeedback, TextInput} from 'react-native'
-import React, {useState} from 'react'
+import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, FlatList, Pressable, Button, TouchableWithoutFeedback, TextInput, Modal,ActivityIndicator} from 'react-native'
+import React, {useState, useEffect} from 'react'
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
-import { height } from '../Home/DetailNews';
-import productFeatured from '../../types/dataFeaturedProducts'
 import { Ionicons } from '@expo/vector-icons'; 
 import('../../mobx/cart_store')
-import Modal from "react-native-modal";
+import ModalView from "react-native-modal";
 import { cartStore,CartItem } from '../../mobx/cart_store';
 import { AntDesign } from '@expo/vector-icons';
 import { observer } from 'mobx-react';
+import { getProductId } from '../ProductSevice';
 
 export const data = [
     {
@@ -37,25 +36,43 @@ const ProductDetail = (props,route) => {
     const {navigation,route:{params: {id},},} = props
     const [mood, setMood] = useState('Vừa')
     const [finalPrice, setFinalPrice] = useState(35000)
+    const [productDetail, setProductDetail] = useState();
     const [heart, setHeart] = useState(false)
     const [qwe, setQwe] = useState()
     const [modalVisible, setModalVisible] = useState(false);
-    const [modalVisibleCart, setModalVisibleCart] = useState(true);
+    const [modalVisibleCart, setModalVisibleCart] = useState(false);
     const [quantity, setQuatity] = useState(1);
     const [recordInput, setRecordIput] = useState('');
     const [recordInputUpdate, setRecordIputUpdate] = useState('');
-    const [textLength, setTextLength] = useState(0)
+    const [textLength, setTextLength] = useState(0);
+    const [isLoading, setIsLoading] = useState(false);
 
         const toggleModal = () => {
             setModalVisible(!modalVisible);
         };
 
-    const item = productFeatured.find((items) =>{
-        if(items.id == id){
-            // console.log('detail========>', items)
-            return items;
+        useEffect(() => {
+            setIsLoading(true)  
+            onGetDetail();
+          }, []);
+    
+        const onGetDetail = async () => {
+        getProductId(id)
+            .then(res => {
+            let data = res;
+            setProductDetail(data);
+            setIsLoading(false)  
+            })
+            .catch(err => {
+            });
         }
-      })
+
+        if(!productDetail){
+            return null
+        }
+        // console.log('===> detail', productDetail)
+        // console.log('===> id', id)
+
 
       const formatCash = (str) => {
         return str.split('').reverse().reduce((prev, next, index) => {
@@ -63,16 +80,20 @@ const ProductDetail = (props,route) => {
         })
       }
 
+      const showModal = () => {
+        setModalVisibleCart(true);
+        setTimeout(() => {
+          setModalVisibleCart(false);
+        }, 1000);
+      };
+
 
       const addToCart = (items:CartItem) => {
-        if(item){
+        if(productDetail){
         cartStore.addItem(items)
         }
    }
 
-      if(!item){
-        return null
-      }
 
 
     //   console.log('=====>', qwe)
@@ -136,27 +157,27 @@ const ProductDetail = (props,route) => {
                 }
             </View>
         </View>
-        <ScrollView
-        >
+        <ScrollView>
             <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}>
                 <View style={styles.imageContainer}>
                     {
-                        item.productGalleries.map(((e) => {
+                        productDetail.image.map(((e) => {
+                            console.log('====>',e)
                             return(
-                                <View key={e.thumbnail}>
-                                    <Image style={{width:300, height: 400}} source = {{uri: e.thumbnail}} resizeMode={"cover"}/>
+                                <View key={e}>
+                                    <Image style={{width:300, height: 400}} source = {{uri: e}} resizeMode={"cover"}/>
                                 </View>
                             )
                         }))
                     }
                 </View>
-        </ScrollView>
+            </ScrollView>
                         
         <View style = {styles.deltaiContainer}>
             <View style = {styles.textNameContainer}>
-                <Text style = {styles.textName}>{item.name}</Text>
+                <Text style = {styles.textName}>{productDetail.name}</Text>
                 <View>
                     {
                         heart == false ?
@@ -179,16 +200,16 @@ const ProductDetail = (props,route) => {
             </View>
 
             <View style = {styles.textPriceContainer}>
-            <Text style = {styles.textPrice}>{formatCash(item.price.toString())}đ</Text>
+            <Text style = {styles.textPrice}>{formatCash(productDetail.price.toString())}đ</Text>
             </View>
 
             <View style = {styles.describeContainer}>
-                <Text style = {styles.textDescribe}>{item.describe}</Text>
+                <Text style = {styles.textDescribe}>{productDetail.description}</Text>
             </View>
             
         </View>
 
-        <View style = {styles.SizeContainer}>
+        {/* <View style = {styles.SizeContainer}>
             <View style = {styles.textSizeContainer}>
                 <View style = {{flexDirection: 'row'}}>
                   <Text style = {styles.textSize}>Size</Text>
@@ -225,7 +246,7 @@ const ProductDetail = (props,route) => {
                     ))}
                 </View>
             </View>
-        </View>
+        </View> */}
         <View style = {styles.recordContainer}>
             <View style = {styles.titleRecordContainer}>
                 <View style = {styles.textTitleContainer}>
@@ -250,7 +271,7 @@ const ProductDetail = (props,route) => {
         </ScrollView>
 
         <View>
-            <Modal
+            <ModalView
             animationIn={'fadeIn'}
             animationOut={'fadeOutDown'}
             transparent={true}
@@ -283,7 +304,7 @@ const ProductDetail = (props,route) => {
                             <Text>{textLength}/50</Text>
                         </View>
 
-                        <View style ={styles.goiYContainer}>
+                        {/* <View style ={styles.goiYContainer}>
                             <Text style = {styles.textTitleGoiY}>Gợi ý</Text>
                             <View style ={{flexDirection: 'row', paddingRight:10,alignItems:'center'}}>
                             <ScrollView
@@ -299,7 +320,7 @@ const ProductDetail = (props,route) => {
                                 />
                                 </ScrollView>
                             </View>
-                        </View>
+                        </View> */}
                         <View style = {styles.lineStyle}></View>
                         <View style = {{flexDirection: 'row', justifyContent: 'space-between',}}>
                             <View></View>
@@ -308,7 +329,7 @@ const ProductDetail = (props,route) => {
                             setRecordIputUpdate(recordInput)
                            }}>
                            <View style = {{paddingRight: 10}}>
-                                <Text style = {{color: '#F7C33C', fontWeight: '600'}}>Xong</Text>
+                                <Text style = {{color: '#CD6600', fontWeight: '600'}}>Xong</Text>
                             </View>
                            </TouchableOpacity>
                         </View>
@@ -316,8 +337,37 @@ const ProductDetail = (props,route) => {
                    
                 </View>
                 
-            </Modal>
+            </ModalView>
         </View>
+
+        <Modal
+                animationType="fade"
+                transparent
+                visible ={modalVisibleCart}
+                >
+                <View style={{flexDirection: 'row', justifyContent: 'space-between', flex: 1, paddingTop: 55}}>
+                    <View></View>
+                    <View
+                    style={{
+                        paddingLeft: 10,
+                        paddingRight: 10,
+                        backgroundColor: 'white',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        width: 220,
+                        height: 50,
+                        borderRadius: 7,
+                        elevation: 3,
+                        flexDirection: 'row'
+                    }}>
+                    <Image style= {{width:20,height:20}} source={require("../../../assets/success-image.png")} />
+                    <Text style={{fontSize: 14, fontFamily:'Montserrat_500Medium'}}>
+                        Đã thêm vào giỏ hàng
+                    </Text>
+                    </View>
+                    <View></View>
+                </View>
+        </Modal>
   
         <View style = {styles.footerContainer}>
             <View style = {styles.buttonContainer}>
@@ -339,18 +389,20 @@ const ProductDetail = (props,route) => {
 
                 <TouchableOpacity 
                     onPress={ () =>  {
-                        if(item){
+                        if(productDetail){
                             const itemDetail: CartItem = {
-                                product: item,
+                                product: productDetail,
                                 quantity: quantity,
-                                price: finalPrice
+                                price: productDetail.price,
+                                note: recordInput
                             }
                             addToCart(itemDetail)
+                            showModal()
                         }
                     }}
                 >
                 <View style = {styles.button}>
-                    <Text style = {styles.textButton}>Chọn {formatCash((quantity*finalPrice).toString())}đ</Text>
+                    <Text style = {styles.textButton}>Chọn {formatCash((quantity*productDetail.price).toString())}đ</Text>
                 </View>
                 </TouchableOpacity>
             </View>
@@ -416,7 +468,7 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         paddingRight: 10,
         paddingTop: 20,
-        height: 300,
+        paddingBottom: 20,
         backgroundColor: 'white'
     },
 

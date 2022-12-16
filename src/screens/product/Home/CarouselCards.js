@@ -24,7 +24,7 @@ const CarouselCards = () => {
       .catch(err => {
         console.log('ErorrGetBanner: ', err)
       });
-      console.log('banner',banner)
+      // console.log('banner',banner)
  }
 
   const CarouselCardItem = ({ item, index }) => {

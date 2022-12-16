@@ -1,12 +1,16 @@
 import React, { useState, useContext, createContext } from "react";
-import { StyleSheet, Text, View, Image, TextInput, Pressable, ScrollView, ToastAndroid, TouchableOpacity, Dimensions } from "react-native";
+import { StyleSheet, Text, View, Image, TextInput, Pressable, ScrollView, ToastAndroid, TouchableOpacity, Dimensions,Modal } from "react-native";
 import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useFonts, Montserrat_600SemiBold, Montserrat_500Medium, Montserrat_700Bold, Montserrat_400Regular } from '@expo-google-fonts/montserrat';
 import { UserContext } from "../UserContext";
-const Login = (props) => {
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
+
+
+
+const Login = (props) => {
+    const [modalVisible, setModalVisible] = useState(false);
     const { navigation } = props;
-    
     const { onLogin } = useContext(UserContext);
     const [email, setEmail] = useState("linh123");
     const [password, setPassword] = useState("12345");
@@ -24,6 +28,13 @@ const Login = (props) => {
         return null;
     };
 
+     const showModal = () => {
+        setModalVisible(true);
+        setTimeout(() => {
+          setModalVisible(false);
+        }, 1500);
+      };
+
     const login = async () => {
         if (
           !email ||
@@ -33,13 +44,14 @@ const Login = (props) => {
         ) {
           ToastAndroid.show("Vui lòng nhập đầy đủ thông tin", ToastAndroid.CENTER);
           return;
+        }else{
+            // const token = await AsyncStorage.getItem('token');
+            const res = onLogin(email, password);
+            // console.log('dsasad', token)
+            // if(token != null) return showModal();
         }
     
-        const res = onLogin(email, password);
-        if (res == false) {
-          ToastAndroid.show("Đăng nhập thành công", ToastAndroid.CENTER);
-          return;
-        }
+
       };
 
 
@@ -60,7 +72,7 @@ const Login = (props) => {
                     <Pressable style={styles.inputContainer}>
                         <TextInput
                             style={styles.inputText}
-                            placeholder="Nhập email"
+                            placeholder="Nhập username"
                             onChangeText={setEmail}
                             value ={email}
                              />
@@ -110,6 +122,34 @@ const Login = (props) => {
                     </Pressable> */}
                 </View>
             </View>
+
+            <Modal
+                animationType="fade"
+                transparent
+                visible={modalVisible}>
+                <View style={{flexDirection: 'row', justifyContent: 'space-between', paddingTop:660}}>
+                    <View></View>
+                    <View
+                    style={{
+                        paddingLeft: 10,
+                        paddingRight: 10,
+                        backgroundColor: 'white',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        width: 220,
+                        height: 50,
+                        borderRadius: 7,
+                        elevation: 3,
+                        flexDirection: 'row'
+                    }}>
+                    <Image style= {{width:20,height:20}} source={require("../../../assets/success-image.png")} />
+                    <Text style={{fontSize: 14, fontFamily:'Montserrat_500Medium'}}>
+                        Đăng nhập thành công
+                    </Text>
+                    </View>
+                    <View></View>
+                </View>
+            </Modal>
         </ScrollView>
     );
 };
@@ -161,7 +201,7 @@ const styles = StyleSheet.create({
     loginButton: {
         flexDirection: 'row',
         justifyContent: 'center',
-        backgroundColor: '#c4c4c4',
+        backgroundColor: '#CD6600',
         padding: 15,
         marginHorizontal: 30,
         marginTop: 30,

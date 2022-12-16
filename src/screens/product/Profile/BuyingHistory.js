@@ -1,12 +1,38 @@
-import { StyleSheet, Text, View, FlatList, Pressable } from 'react-native';
+import { StyleSheet, Text, View, FlatList, Pressable,RefreshControl, ActivityIndicator } from 'react-native';
 import React, { useState, useEffect, useCallback } from 'react';
 import { useFonts, Montserrat_600SemiBold, Montserrat_500Medium, Montserrat_700Bold, Montserrat_400Regular } from '@expo-google-fonts/montserrat';
 import { Entypo } from '@expo/vector-icons';
 import history from '../../types/dataBuyingHistory';
-
+import { getOrder, getOrderUser, getProfile } from '../../user/UserService';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import moment from "moment";
 const BuyingHistory = (props) => {
-
     const { navigation } = props;
+    const [refresh, setRefresh] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [order, setOrder] = useState([]);
+    useEffect(() => {
+        setIsLoading(true)  
+        onGetOrder()
+      }, []);
+
+    const onGetOrder = async () => {
+        getOrder()
+            .then(res => {
+            let data = res;
+            setOrder(data.order)
+            setIsLoading(false)
+            console.log('<<<<',res)
+            })
+            .catch(err => {
+            });
+      };
+
+      const onRefresh = () =>{
+      setIsLoading(true);
+      onGetOrder()
+    }
+    //   console.log('>>>>>>>>>>><<<<<',order)
 
     let [fontsLoaded, error] = useFonts({
         Montserrat_600SemiBold,
@@ -25,29 +51,31 @@ const BuyingHistory = (props) => {
         })
     }
 
-    const renderItem = (item) => {
+    const renderItem = ({item}) => {
         return (
-            <View style={styles.container}>
+            <Pressable onPress={() => navigation.navigate("DetailHistory",{id:item._id})}>
+                <View style={styles.container}>
                 <View style={styles.leftContainer}>
-                    <Text style={styles.productName}>{item.item.name}</Text>
+                    <Text style={styles.productName}>{item.name}</Text>
                     <View style={styles.productDateTime}>
-                        <Text style={styles.productTime}>{item.item.time}</Text>
+                        <Text style={styles.productTime}>{moment(item.released).format('LT')}</Text>
                         <Text> - </Text>
-                        <Text style={styles.productDate}>{item.item.date}</Text>
+                        <Text style={styles.productDate}>{moment(item.released).format('L')}</Text>
                     </View>
                     {
-                        item.item.status == "PROCESSING" ? <Text style={styles.productStatus}>Đang thực hiện</Text> :
-                            item.item.status == "CANCELED" ? <Text style={[styles.productStatus, { color: 'red' }]}>Đã hủy</Text> :
-                                <Text style={styles.productStatus}>Đã hoàn tất</Text>
-
+                        item.status === "PROCESSING" ? <Text style={styles.productStatus}>Đang thực hiện</Text> :
+                        item.status === "CANCEL" ? <Text style={[styles.productStatus, { color: 'red' }]}>Đã hủy</Text> :
+                        item.status === "COMPLETE" ? <Text style={[styles.productStatus, { color: 'red' }]}>Đã hoàn tất</Text> :
+                        <Text style={[styles.productStatus]}>Đang vận chuyển</Text>
                     }
 
                 </View>
                 <View style={styles.rightContainer}>
-                    <Text style={styles.productPrice}>{formatCash(item.item.price.toString())}đ</Text>
+                    <Text style={styles.productPrice}>{formatCash(item.moneyFinal.toString())}đ</Text>
                 </View>
 
             </View>
+            </Pressable>
         )
 
     }
@@ -59,15 +87,27 @@ const BuyingHistory = (props) => {
                 <Text style={styles.appBar}>Lịch sử đơn hàng</Text>
             </Pressable>
             <View style={styles.space}></View>
-
-            <FlatList
-            bounces={false}
-                data={history}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={renderItem}
-                showsVerticalScrollIndicator={false}
-                style={{ marginBottom: 90 }}
-            />
+            {
+                isLoading ? 
+                <View style={{justifyContent: 'center', alignItems: 'center' , paddingTop: 20}}>
+                <ActivityIndicator size="large" color="#CD6600" />
+                </View> :
+                <FlatList
+                    bounces={false}
+                    data={order}
+                    keyExtractor={(item) => item._id.toString()}
+                    renderItem={renderItem}
+                    showsVerticalScrollIndicator={false}
+                    style={{ marginBottom: 90 }}
+                    refreshControl={
+                        <RefreshControl
+                          refreshing={refresh}
+                          onRefresh={onRefresh}
+                        />
+                      }
+                />
+            }
+            
         </View>
     )
 }

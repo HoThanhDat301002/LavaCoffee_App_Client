@@ -9,12 +9,13 @@ axiosInstance.interceptors.request.use(
     async config => {
         // console.log('aaa',config)
         const token = await AsyncStorage.getItem('token');
+        const id = await AsyncStorage.getItem('userId');
         config.headers = {
             'Authorization': `Bearer ${token}`,
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         }
-        console.log('check token',token);
+        // console.log('check token',token);
         return config;
     },
     
@@ -27,7 +28,7 @@ axiosInstance.interceptors.response.use(
         return res.data
     },
     err => {
-        console.log('reponse err ne',err.response);
+        // console.log('reponse err ne',err.response);
        return Promise.reject(err)
     } 
     

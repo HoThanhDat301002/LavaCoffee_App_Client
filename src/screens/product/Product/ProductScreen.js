@@ -1,15 +1,53 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, FlatList, Pressable, Button, TouchableWithoutFeedback, TextInput} from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, FlatList, Pressable, Button, TouchableWithoutFeedback, TextInput,RefreshControl, ActivityIndicator} from 'react-native'
 import React, { useEffect, useState ,useRef} from 'react'
 import { useFonts, Montserrat_600SemiBold, Montserrat_500Medium } from '@expo-google-fonts/montserrat';
-import cateData from '../../types/cateData'
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
-import {dataCoffee,dataTraiCay,dataHiTea} from '../../types/dataProduct'
 import { Ionicons } from '@expo/vector-icons'; 
 import { AntDesign } from '@expo/vector-icons';
-import('../../mobx/cart_store')
+import { getCategories } from '../ProductSevice';
+import { cartStore } from '../../mobx/cart_store';
+import { observer } from 'mobx-react';
 
 const ProductScreen = (props) => {
   const { navigation } = props;
+  const [categories, setCategories] = useState([]);
+  const [scrollToIndex, setScrollToIndex] = useState(0);
+  const [dataSourceCords, setDataSourceCords] = useState([]);
+  const [ref, setRef] = useState(null);
+  const [refresh, setRefresh] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  useEffect(() => {
+    setIsLoading(true)
+    onGetCategory()
+  }, []);
+
+  const onGetCategory = async () => {
+    getCategories()
+      .then(res => {
+        let data = res;
+        setCategories(data);
+        setIsLoading(false)
+      })
+      .catch(err => {});
+ }
+
+ const onRefresh = () =>{
+  setIsLoading(true);
+  onGetCategory()
+}
+
+ const scrollHandler = () => {
+  // console.log(dataSourceCords.length, scrollToIndex);
+  if (dataSourceCords.length > scrollToIndex) {
+    ref.scrollTo({
+      x: 0,
+      y: dataSourceCords[scrollToIndex],
+      animated: true,
+    });
+  }
+};
+
+//  console.log('cate=>>>' , categories)
 
   let [fontsLoaded, error] = useFonts({
     Montserrat_600SemiBold,
@@ -27,37 +65,25 @@ const ProductScreen = (props) => {
   }
 
 
-  // console.log('cofee ne========>', itemCoffee.name)
+  // console.log('cofee ne========>', categories)
 
-  const renderItemCategory = (item) => (
-    // console.log('>>>>>>>>>>>', item.id),
-    <TouchableOpacity style ={{paddingTop: 10,paddingBottom: 10,}}>
+  const renderItemCategory = ({item,index}) => (
+    // console.log('>>>>>>>>>>>', item),
+    <TouchableOpacity onPress={()=> {
+      setScrollToIndex(index)
+      scrollHandler()
+    }
+    } style ={{paddingTop: 10,paddingBottom: 10,}}>
       <View style={styles.categoriesContainer}>
        <View style ={styles.imageCateContainer}>
-        <Image style={styles.imageCategory} source={{ uri: item.item.imgUrl}}
+        <Image style={styles.imageCategory} source={{ uri: item.image ? item.image : null}}
           resizeMode={"cover"}/>
        </View>
-        <Text style={styles.text}>{item.item.name}</Text>
+        <Text style={styles.text}>{item.name}</Text>
       </View>
     </TouchableOpacity>
   );
   
-  const renderItem = (item) => {
-    <View>
-      <Pressable>
-        <View>
-          <View>
-            <Image style={styles.imageCategory} source={{ uri: item.item.thumbnail}}
-            resizeMode={"cover"}/>
-          </View>
-          <View>
-            <Text>{item.item.name}</Text>
-            <Text>{formatCash(item.item.price).toString()}</Text>
-          </View>
-        </View>
-      </Pressable>
-    </View>
-  }
   
 return (
   <View style = {styles.container}>
@@ -67,15 +93,30 @@ return (
            
             <View style={styles.iconCartContainer}>
                 <View style ={{marginRight: 30}}>
-                  <TouchableOpacity >
+                  <TouchableOpacity onPress={()=> navigation.navigate('SearchProduct')}>
                   <AntDesign name="search1" size={24} color="black" />
                   </TouchableOpacity>
                 </View>
 
                 <View>
-                  <TouchableOpacity>
-                   <Ionicons name="ios-heart-outline" size={24} color="black" />
-                  </TouchableOpacity>
+                  {
+                    cartStore.count > 0 ?
+                    <View style={styles.iconCartContainer}>
+                        <TouchableOpacity onPress={()=> navigation.navigate('CartProduct')}>
+                            <View style={{paddingRight: 20}}>
+                                <View style={styles.countCartContainer}>
+                                    <Text style ={styles.textCountCart}>{cartStore.count.toString()}</Text>
+                                </View>
+                            </View>
+                            <AntDesign name="shoppingcart" size={25} color="black" />
+                        </TouchableOpacity>
+                    </View> :
+                    <View style={styles.iconCartContainer}>
+                        <TouchableOpacity onPress={()=> navigation.navigate('CartProduct')}>
+                        <AntDesign name="shoppingcart" size={25} color="black" />
+                        </TouchableOpacity>
+                    </View>
+                  }
                 </View>    
             </View>
         </View>
@@ -83,140 +124,118 @@ return (
 
     <ScrollView
     showsVerticalScrollIndicator ={false}
+    style ={{backgroundColor: 'white'}}
+    refreshControl={
+      <RefreshControl
+        refreshing={refresh}
+        onRefresh={onRefresh}
+      />
+    }
+    ref={(ref) => {
+      setRef(ref);
+    }}
     >
     <View>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
         >
-          <FlatList
-          data={cateData}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={renderItemCategory}
-          showsHorizontalScrollIndicator={false}
-          numColumns={8/2}
-        />
+          <View>
+              <FlatList
+              data={categories}
+              keyExtractor={(item) => item._id.toString()}
+              renderItem={renderItemCategory}
+              showsHorizontalScrollIndicator={false}
+              numColumns={8/2}
+            />
+          </View>
       </ScrollView>
     </View>
 
-    <View style={{paddingTop: 10}}>
-      <View style={styles.coffeTitleContainer}>
-       <Text style={styles.textcoffeTitle}>Cà phê</Text>
-      </View>
-
-      <View>
-        {
-          dataCoffee.map(((e) => {
-            return(
-              <Pressable key={e.id} onPress={() => navigation.navigate('ProductDetail', {id: e.id})} >
-                <View style ={styles.productContainer}>
-                  <View style ={styles.product}>
-                  <View style={{flexDirection: 'row'}}>
-                      <View>
-                        <Image style={styles.imageProduct} source={{ uri: e.thumbnail}}
-                        resizeMode={"cover"}/>
-                      </View>
-                      <View style ={styles.textProductContainer}>
-                        <Text style={styles.textName}>{e.name}</Text>
-                        <Text style={styles.textPrice}>{formatCash(e.price.toString())}đ</Text>
-                      </View>
+      {
+         isLoading ? 
+         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+         <ActivityIndicator size="large" color="#CD6600" />
+         </View> :
+         <View>
+          {
+            categories.map((e,index) => {
+              return(
+                <View
+                key={index}
+                onLayout={(event) => {
+                  const layout = event.nativeEvent.layout;
+                  dataSourceCords[index] = layout.y;
+                  setDataSourceCords(dataSourceCords);
+                  // console.log(dataSourceCords);
+                  // console.log('height:', layout.height);
+                  // console.log('width:', layout.width);
+                  // console.log('x:', layout.x);
+                  // console.log('y:', layout.y);
+                }}
+                >
+                  <View style={styles.coffeTitleContainer}>
+                  <Text style={styles.textcoffeTitle}>{e.name}</Text>
                   </View>
-                    <View></View>
+                  <View>
+                    {
+                      e.product.map(((pro) => {
+                        return(
+                          <Pressable key={pro._id} onPress={() => navigation.navigate('ProductDetail', {id: pro._id})} >
+                            <View style ={styles.productContainer}>
+                              <View style ={styles.product}>
+                                <View style={{flexDirection: 'row'}}>
+                                    <View>
+                                      <Image style={styles.imageProduct} source={{ uri: pro.image[0] ? pro.image[0] : null}}
+                                      resizeMode={"cover"}/>
+                                    </View>
+                                    <View style ={styles.textProductContainer}>
+                                      <Text numberOfLines={2} style={styles.textName}>{pro.name}</Text>
+                                      <Text style={styles.textPrice}>{formatCash(pro.price+"")}đ</Text>
+                                    </View>
+                                    
+                                </View>
+                                <View></View>
+                              </View>
+                            </View>
+                          </Pressable>
+                        )
+                      }))
+                    }
                   </View>
+
                 </View>
-              </Pressable>
-            )
-          }))
-        }
-       
-      </View>
-    </View>
+              )
+            })
+          }
+        </View>
+      }
 
-    <View style={{paddingTop: 30}}>
-      <View style={styles.coffeTitleContainer}>
-       <Text style={styles.textcoffeTitle}>Trà trái cây - Trà sữa</Text>
-      </View>
 
-      <View>
-        {
-          dataTraiCay.map(((e) => {
-            return(
-              <Pressable key={e.id}  onPress={() => navigation.navigate('ProductDetail', {id: e.id})}>
-                <View style ={styles.productContainer}>
-                <View style ={styles.product}>
-                 <View style={{flexDirection: 'row'}}>
-                    <View>
-                      <Image style={styles.imageProduct} source={{ uri: e.thumbnail}}
-                      resizeMode={"cover"}/>
-                    </View>
-                    <View style ={styles.textProductContainer}>
-                      <Text style={styles.textName}>{e.name}</Text>
-                      <Text style={styles.textPrice}>{formatCash(e.price.toString())}đ</Text>
-                    </View>
-                 </View>
-                  <View></View>
-                </View>
-              </View>
-              </Pressable>
-            )
-          }))
-        }
-
-      </View>
-    </View>
-
-    <View style={{paddingTop: 30}}>
-      <View style={styles.coffeTitleContainer}>
-       <Text style={styles.textcoffeTitle}>Hi-tea Healthy</Text>
-      </View>
-
-      <View>
-        {
-          dataHiTea.map(((e) => {
-            return(
-              <Pressable key={e.id} onPress={() => navigation.navigate('ProductDetail', {id: e.id})}>
-              <View style ={styles.productContainer}>
-                <View style ={styles.product}>
-                 <View style={{flexDirection: 'row'}}>
-                    <View>
-                      <Image style={styles.imageProduct} source={{ uri: e.thumbnail}}
-                      resizeMode={"cover"}/>
-                    </View>
-                    <View style ={styles.textProductContainer}>
-                      <Text style={styles.textName}>{e.name}</Text>
-                      <Text style={styles.textPrice}>{formatCash(e.price.toString())}đ</Text>
-                    </View>
-                 </View>
-                  <View></View>
-                </View>
-              </View>
-              </Pressable>
-            )
-          }))
-        }
-      </View>
-    </View>
+    <View style ={{height: 20}}></View>
     </ScrollView>
   </View>
 );
 }
 
-export default ProductScreen
+export default observer(ProductScreen)
 
 const styles = StyleSheet.create({
   textPrice:{
     marginTop: 10,
     fontSize:14,
+    // backgroundColor: 'red'
   },
 
   textName:{
+    width: 240,
     fontSize:16,
-    fontFamily: 'Montserrat_600SemiBold'
+    fontFamily: 'Montserrat_600SemiBold',
   },
 
   textProductContainer:{
-  marginLeft: 10,
-  paddingTop: 10
+  paddingLeft: 10,
+  paddingTop: 10,
 },
 
   imageProduct:{
@@ -243,6 +262,7 @@ const styles = StyleSheet.create({
   },
 
   coffeTitleContainer:{
+    marginTop: 30,
     paddingLeft: 10,
     paddingRight: 10,
   },

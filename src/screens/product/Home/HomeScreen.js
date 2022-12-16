@@ -1,27 +1,41 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity,FlatList,Pressable, ScrollView,Dimensions } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity,FlatList,Pressable, ScrollView,Dimensions,RefreshControl, ActivityIndicator } from 'react-native'
 import React,{useState,useEffect,useContext} from 'react'
 import { AntDesign } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons'; 
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 import CarouselCards from './CarouselCards';
-import productFeatured from '../../types/dataFeaturedProducts'
 import { cartStore } from '../../mobx/cart_store';
 import { observer } from 'mobx-react';
-import { getCategories, getProducts } from '../ProductSevice';
-import { ProductContext } from "../ProductContext";
-import { getNews } from '../../user/UserService';
+import { getCategories, getProducts, getProductsHighlights } from '../ProductSevice';
+import { getNews, getProfile } from '../../user/UserService';
 
 const HomeScreen = (props) => {
   const {navigation} = props
-  const { onGetProducts, products } = useContext(ProductContext);
   const [product, setProduct] = useState([]);
+  const [profile, setProfile] = useState();
+  const [refresh, setRefresh] = useState(false);
+  const [productHighlights, setProductHighlights] = useState([]);
   const [news, setNews] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   // console.log(date)
 
   useEffect(() => {
+    setIsLoading(true)
     onGetProduct()
     onGetNews()
+    onGetProductHighlights()
+    onGetProfile()
   }, []);
+
+  const onGetProfile = async () => {
+    getProfile()
+        .then(res => {
+        let data = res;
+        setProfile(data);
+        })
+        .catch(err => {
+        });
+  };
 
   const onGetProduct = async () => {
     getProducts()
@@ -33,6 +47,18 @@ const HomeScreen = (props) => {
         console.log('ErorrGetProduct: ', err)
       });
  }
+
+ const onGetProductHighlights = async () => {
+  getProductsHighlights()
+    .then(res => {
+      let data = res;
+      setProductHighlights(data);
+      setIsLoading(false)
+    })
+    .catch(err => {
+      console.log('ErorrGetProduct: ', err)
+    });
+}
 //  console.log('>>>>> data', product)
 
  const onGetNews = async () => {
@@ -40,10 +66,20 @@ const HomeScreen = (props) => {
     .then(res => {
       let data = res;
       setNews(data);
-
+      setIsLoading(false)
     })
     .catch(err => {});
 }
+
+const onRefresh = () =>{
+  setIsLoading(true);
+  onGetProfile()
+  onGetNews()
+  onGetProduct();
+  onGetProductHighlights();
+}
+
+if(!profile) return null
 
 
 
@@ -53,12 +89,13 @@ const HomeScreen = (props) => {
     })
   }
 // console.log(productFeatured)
-  const renderItem = ({item}) => (
-    <View style={styles.productContainer}>
-      <Pressable onPress={() => navigation.navigate('ProductDetail', {id: item.id})}>
+  const renderItem = ({item}) => {
+    return(
+      <View style={styles.productContainer}>
+      <Pressable onPress={() => navigation.navigate('ProductDetail', {id: item._id})}>
         <View style={styles.bookContainer}>
             <View style={styles.imageContainer}>
-                 <Image style={styles.image} source={{uri: item.thumbnail}}
+                 <Image style={styles.image} source={{uri: item.image[0]}}
                  resizeMode={"cover"}/>
             </View>
             <View style={styles.textNameContainer}>
@@ -70,18 +107,31 @@ const HomeScreen = (props) => {
         </View>
       </Pressable>
     </View>
-);
+    )
+
+  };
 
   return (
     <ScrollView
+    style ={{backgroundColor: 'white'}}
     showsVerticalScrollIndicator={false}
+    refreshControl={
+      <RefreshControl
+        refreshing={refresh}
+        onRefresh={onRefresh}
+      />
+    }
     >
     <View style = {styles.container}>
      <View style={styles.headerContainer}>
         <View style = {{paddingLeft: 20,paddingTop: 40,flexDirection: 'row', justifyContent: 'space-between'}}>
         <View style = {styles.webComeContainer}>
           <Image style={{width:30,height:30}} source={require('../../../assets/image_tea_fix.png')}/>
-          <Text style = {styles.textWebcome}>Chào Jen !</Text>
+          {
+            profile.name == "" ? <Text style = {styles.textWebcome}>Chào bạn mới !</Text>
+            : <Text style = {styles.textWebcome}>Chào {profile.name} !</Text>
+          }
+          
         </View>
           <View style ={{flexDirection: 'row',paddingRight: 20,}}>
                 {
@@ -120,13 +170,20 @@ const HomeScreen = (props) => {
           <Image style={{width:25,height:25}} source={require('../../../assets/ice-coffee.png')}/>  
           <Text style={styles.textTitle}>Gợi ý cho bạn</Text>
         </View>
-        <FlatList
-          horizontal
-          data={productFeatured}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={renderItem}
-          showsHorizontalScrollIndicator={false}
-          />
+        {
+           isLoading ? 
+           <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+           <ActivityIndicator size="large" color="#CD6600" />
+           </View> :
+           <FlatList
+           horizontal
+           data={productHighlights}
+           keyExtractor={(item) => item._id.toString()}
+           renderItem={renderItem}
+           showsHorizontalScrollIndicator={false}
+           />
+        }
+        
       </View>
 
       <View style = {styles.newsContainer}>
@@ -134,6 +191,11 @@ const HomeScreen = (props) => {
           <Image style={{width:25,height:25}} source={require('../../../assets/newspaper.png')}/>
           <Text style={styles.textTitleNews}>Khám phá thêm</Text>
         </View>
+        {
+          isLoading ? 
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <ActivityIndicator size="large" color="#CD6600" />
+          </View> :
         <View style={{flexDirection: 'row',flexWrap: 'wrap',justifyContent: 'space-between', paddingLeft: 20, paddingRight: 20}}>
         {
             news.map(((item) => {
@@ -159,6 +221,8 @@ const HomeScreen = (props) => {
           }))
         }
         </View>
+        }
+
       </View>
       <View style = {{height:20}}></View>
     </View>

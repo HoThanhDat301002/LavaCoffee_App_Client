@@ -1,12 +1,68 @@
-import { StyleSheet, Text, View, Pressable, ScrollView, Image, TextInput } from 'react-native';
+import { StyleSheet, Text, View, Pressable, ScrollView, Image, TextInput, Alert, TouchableOpacity,Modal } from 'react-native';
 import React, { useState, useEffect, useCallback } from 'react';
 import { useFonts, Montserrat_600SemiBold, Montserrat_500Medium, Montserrat_700Bold, Montserrat_400Regular } from '@expo-google-fonts/montserrat';
 import { Entypo, AntDesign } from '@expo/vector-icons';
 import RNPickerSelect from "react-native-picker-select";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getProfile, updateProfile } from '../../user/UserService';
+import { height } from '../Home/DetailNews';
 
 const UserInformation = (props) => {
-
     const { navigation } = props;
+    const [profile, setProfile] = useState(null);
+    const [name, setName] = useState("");
+    const [phone, setPhone] = useState("");
+    const [refreshKey, setRefreshKey] = useState(0);
+    const [modalVisible, setModalVisible] = useState(false);
+    useEffect(() => {
+        onGetProfile()
+      }, [refreshKey]);
+
+    const onGetProfile = async () => {
+        getProfile()
+            .then(res => {
+            let data = res;
+            setProfile(data);
+            setName(data.name)
+            setPhone(data.phone)
+            
+            })
+            .catch(err => {
+            });
+      };
+
+
+
+      const updateUser = async () => {
+        try {
+            if (
+                !name ||
+                !phone ||
+                name.trim().length == 0 ||
+                phone.trim().length == 0
+              ) {
+                  Alert('Vui lòng nhập đầy đủ thông tin')
+                return;
+              }else{
+                const res = await updateProfile(name,phone)
+                showModal()
+                setRefreshKey(oldKey => oldKey +1)
+                console.log(res)
+              }
+          
+
+        } catch (error) {
+            console.log("onUpdateProfile error", error);
+            }
+      };
+
+      const showModal = () => {
+        setModalVisible(true);
+        setTimeout(() => {
+          setModalVisible(false);
+        }, 1000);
+      };
+
 
     let [fontsLoaded, error] = useFonts({
         Montserrat_600SemiBold,
@@ -19,6 +75,11 @@ const UserInformation = (props) => {
         return null;
     };
 
+    if(!profile) return null
+
+
+    console.log(profile)
+    // console.log(profile.order.map((e) => e.id))
     return (
         <View style={styles.inforContainer}>
             <Pressable onPress={() => navigation.goBack()} style={styles.appBarContainer}>
@@ -31,9 +92,18 @@ const UserInformation = (props) => {
                     <View style={styles.imageContainer}>
                         <Image style={styles.image} source={require('../../../assets/bac-siu.jpg')} resizeMode={'cover'} />
                     </View>
-                    <TextInput style={styles.input}>Thục Miên</TextInput>
-                    <TextInput style={styles.input}>Trần Võ</TextInput>
-                    <TextInput editable={false} style={styles.disableInput}>thucmien2002@gmail.com</TextInput>
+                    <TextInput style={styles.input}
+                        placeholder="Nhập họ tên"
+                        onChangeText={setName}
+                        value ={name}
+                    />
+                    <TextInput style={styles.input}
+                        placeholder="Nhập số điện thoại"
+                        onChangeText={setPhone}
+                        value ={phone}
+                    />
+
+                    {/* <TextInput editable={false} style={styles.disableInput}>thucmien2002@gmail.com</TextInput>
                     <Pressable style={[styles.disableInput, { flexDirection: 'row', justifyContent: 'space-between' }]}>
                         <TextInput style={{
                             fontFamily: 'Montserrat_400Regular',
@@ -53,11 +123,40 @@ const UserInformation = (props) => {
                             ]}
                         />
                         <Entypo style={styles.icon} name="chevron-down" size={18} color="gray" />
-                    </View>
-                    <Pressable style={styles.updateButton}>
+                    </View> */}
+                    <TouchableOpacity style={styles.updateButton} onPress={()=> updateUser()}> 
                         <Text style={styles.updateText}>Cập nhật tài khoản</Text>
-                    </Pressable>
+                    </TouchableOpacity>
                 </View>
+
+                <Modal
+                animationType="fade"
+                transparent ={true}
+                visible={modalVisible}
+                transparent={true}>
+                <View style={{flexDirection: 'row', justifyContent: 'space-between', paddingTop:45}}>
+                    <View></View>
+                    <View
+                    style={{
+                        paddingLeft: 10,
+                        paddingRight: 10,
+                        backgroundColor: 'white',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        width: 200,
+                        height: 50,
+                        borderRadius: 7,
+                        elevation: 10,
+                        flexDirection: 'row'
+                    }}>
+                    <Image style= {{width:20,height:20}} source={require("../../../assets/success-image.png")} />
+                    <Text style={{fontSize: 14, fontFamily:'Montserrat_500Medium'}}>
+                        Cập nhật thành công
+                    </Text>
+                    </View>
+                    <View></View>
+                </View>
+            </Modal>
             </ScrollView>
             <View style={styles.deleteAccount}>
                 <AntDesign name="delete" size={18} color="gray" />
@@ -85,7 +184,9 @@ const styles = StyleSheet.create({
         paddingVertical: 15
     },
     inforContainer: {
-        position: 'relative'
+        position: 'relative',
+        backgroundColor: 'white',
+        height: '100%'
     },
     updateText: {
         color: 'white',
@@ -93,7 +194,7 @@ const styles = StyleSheet.create({
         fontSize:14
     },
     updateButton: {
-        backgroundColor: '#c4c4c4',
+        backgroundColor: '#CD6600',
         padding: 15,
         marginHorizontal: 15,
         marginTop: 30,

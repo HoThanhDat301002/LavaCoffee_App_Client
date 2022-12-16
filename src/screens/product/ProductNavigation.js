@@ -8,9 +8,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons'; 
 const Tab = createBottomTabNavigator();
 import {getFocusedRouteNameFromRoute} from "@react-navigation/native"
-import {HomeStack, AccountStack,ProductStack} from '../product/Stack/AppStack';
-import EndowScreen from './Endow/EndowScreen';
-import ProductScreen from './Product/ProductScreen';
+import {HomeStack, AccountStack,ProductStack,EndowStack} from '../product/Stack/AppStack';
 
 
 
@@ -20,7 +18,12 @@ export const ProductNavigation = () => {
     const getTabBarVisibility = (route:any)=>{
         const routeName = getFocusedRouteNameFromRoute(route);
         // console.log(routeName)
-        if(routeName?.includes('DetailNews') || routeName?.includes('ProductDetail') ||routeName?.includes('CartProduct')){
+        if(routeName?.includes('DetailNews') || routeName?.includes('ProductDetail') ||routeName?.includes('CartProduct')
+        ||routeName?.includes('SearchProduct') || routeName?.includes('UserConfirm') || routeName?.includes('BuyingHistory') ||
+        routeName?.includes('Contact') || routeName?.includes('FavouriteProduct') || routeName?.includes('Feedback') ||
+        routeName?.includes('UserInformation') || routeName?.includes('PaymentAddress') || routeName?.includes('OrderConfirmation')
+        || routeName?.includes('OrderSuccess') || routeName?.includes('DetailHistory') || routeName?.includes('DetailEndow')
+        ){
           return 'none'
         }
         return 'flex'
@@ -58,7 +61,7 @@ export const ProductNavigation = () => {
                 tabBarStyle:{display:getTabBarVisibility(route)},
             })}
             />
-            <Tab.Screen name="Ưu Đãi" component={EndowScreen} 
+            <Tab.Screen name="Ưu Đãi" component={EndowStack} 
             options={({route})=>({
                 tabBarStyle:{display:getTabBarVisibility(route)},
             })}

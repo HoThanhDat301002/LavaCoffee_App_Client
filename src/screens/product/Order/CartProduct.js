@@ -64,20 +64,20 @@ const CartProduct = (props) => {
                     {
                         cartStore.items.map(((e) => {
                             return(
-                                <View key = {e.product.id} style ={{paddingTop: 10}}>
+                                <View key = {e.product._id} style ={{paddingTop: 10}}>
                                     <View style={styles.cartContainer}>
                                         <View style={[styles.textQuantityContainer, {height: 100,paddingLeft: 10, flexDirection: 'row', paddingTop: 10}]}>
                                             <View>
-                                                <Image source={{uri: e.product.thumbnail}} style = {{width: 70, height: 70, borderRadius: 7}}/>
+                                                <Image source={{uri: e.product.image[0].thumbnail}} style = {{width: 70, height: 70, borderRadius: 7}}/>
                                             </View>
                                             <View style = {{paddingLeft: 10}}>
                                                 <Text style={styles.textName}>{e.product.name}</Text>
                                                 <Text style={styles.textPrice}>{formatCash(e.price.toString())}đ</Text>
-                                                {
+                                                {/* {
                                                     e.price == 39000 ? <Text style={styles.textPrice}>Lớn</Text> :
                                                     e.price == 35000 ? <Text style={styles.textPrice}>Vừa</Text> :
                                                     <Text style={styles.textPrice}>Nhỏ</Text>
-                                                }
+                                                } */}
                                             </View>
                                         </View>
                                         <View style = {styles.quantityContainer}>
@@ -118,7 +118,7 @@ const CartProduct = (props) => {
            </View>
         </View>
         <View style={styles.buttonOrderContainer}>
-            <TouchableOpacity onPress={() => navigation.navigate('OrderConfirmation')}>
+            <TouchableOpacity onPress={() => navigation.navigate('PaymentAddress')}>
                 <View style={[ styles.buttonOrder]}>
                     <View></View>
                     <View><Text style={styles.textButton}>Thanh toán</Text></View>
@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
     },
 
     textName:{
-        width: 120,
+        width: 150,
         color: "black",
         fontWeight: "700",
         lineHeight: 24,

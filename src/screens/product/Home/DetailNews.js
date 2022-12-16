@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ScrollView, Dimensions, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, ScrollView, Dimensions, TouchableOpacity,ActivityIndicator } from 'react-native'
 import React,{useState,useEffect} from 'react'
 import { WebView } from 'react-native-webview';
 export const height = Dimensions.get('window').height;
@@ -8,8 +8,10 @@ import { getNewsId } from '../../user/UserService';
 const DetailNews = (props,route) => {
     const {navigation,route:{params: {id},},} = props
     const [newskDetail, setNewsDetail] = useState();
+    const [isLoading, setIsLoading] = useState(false);
     
     useEffect(() => {
+        setIsLoading(true)  
         onGetDetailNews();
       }, []);
 
@@ -18,13 +20,14 @@ const DetailNews = (props,route) => {
           .then(res => {
             let data = res;
             setNewsDetail(data);
+            setIsLoading(false)  
           })
           .catch(err => {
           });
      }
 
      if(!newskDetail) return null;
-     console.log('>>>>> deitail news', newskDetail);
+    //  console.log('>>>>> deitail news', newskDetail);
     
   return (
         <View style = {styles.container}>
@@ -39,14 +42,19 @@ const DetailNews = (props,route) => {
                 </TouchableOpacity>
             </View>
            </View>
-
-           <View>
-           <ScrollView
-           style={{ paddingTop:3}}
-           >
-            <WebView style={{height: height}} source={{ uri: newskDetail.body }}/>
-            </ScrollView>
-           </View>
+           {
+                isLoading ? 
+                <View style={{justifyContent: 'center', alignItems: 'center' , paddingTop: 20}}>
+                <ActivityIndicator size="large" color="#CD6600" />
+                </View> :
+                <View>
+                    <ScrollView
+                    style={{ paddingTop:3}}
+                    >
+                    <WebView style={{height: height}} source={{ uri: newskDetail.body }}/>
+                    </ScrollView>
+                </View>
+            }
 
            <View>
            </View>

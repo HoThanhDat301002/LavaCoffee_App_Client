@@ -6,7 +6,8 @@ import { useState } from 'react';
 export interface CartItem {
   product:Product,
   quantity:number,
-  price:number 
+  price:number,
+  note:String,
 }
 
 
@@ -21,21 +22,19 @@ export class CartProduct {
   
 
   @action addItem(item:CartItem) {
-    const findProduct = this.items.find(e => e.product.id === item.product.id || e.product.price == item.product.price)
+    const findProduct = this.items.find(e => e.product._id === item.product._id )
     if (findProduct) {
         findProduct.quantity += item.quantity
     //   console.log('Update cart', this.items)
-    ToastAndroid.show("Cập nhật vào giỏ hàng thành công", ToastAndroid.SHORT);
     }
      else {
       this.items.push(item)
-      ToastAndroid.show("Thêm vào giỏ hàng thành công", ToastAndroid.SHORT);
-    //   console.log('Add cart quantity', this.items)
+      console.log('Add cart quantity', this.items)
     }
   }
 
   @computed updateQuantity(product:Product, quantity:number) {
-    const findProduct = this.items.find(e => e.product.id === product.id)
+    const findProduct = this.items.find(e => e.product._id === product._id)
     if (findProduct) {
         findProduct.quantity = quantity
     }
@@ -43,7 +42,7 @@ export class CartProduct {
 
   @computed delteteQuantity(product:Product, quantity:number) {
 
-    const findProduct = this.items.find(e => e.product.id === product.id)
+    const findProduct = this.items.find(e => e.product._id === product._id)
     if (findProduct) {
         findProduct.quantity = quantity
 
@@ -57,7 +56,7 @@ export class CartProduct {
           {text: 'Có', onPress: () => {
             runInAction(() => {
               for(var i = 0; i < this.items.length; i++){
-                if(this.items[i].product.id == findProduct.product.id)
+                if(this.items[i].product._id == findProduct.product._id)
                 this.items.splice(i,1);
                }
             })
