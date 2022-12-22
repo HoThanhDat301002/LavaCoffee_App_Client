@@ -1,12 +1,15 @@
-import { StyleSheet, Text, View, Pressable, FlatList, TouchableOpacity, TextInput } from 'react-native';
+import { StyleSheet, Text, View, Pressable, FlatList, TouchableOpacity, TextInput,ToastAndroid,Alert } from 'react-native';
 import React, { useState, useEffect, useCallback } from 'react';
 import { useFonts, Montserrat_600SemiBold, Montserrat_500Medium, Montserrat_700Bold, Montserrat_400Regular } from '@expo-google-fonts/montserrat';
 import { Entypo, AntDesign  } from '@expo/vector-icons';
 import address from '../../types/dataAddress';
 import { ScrollView } from 'react-native-gesture-handler';
+import { getProfile, updatePass, updateProfile } from '../../user/UserService';
 
 const UserConfirm = (props) => {
     const [confirm_password, setConfirm_password] = useState('');
+    const [oldPassword, setOldPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
     const [show, setShow] = useState(false);
     const [show2, setShow2] = useState(false);
     const [visible, setVisible] = useState(true);
@@ -14,6 +17,23 @@ const UserConfirm = (props) => {
     const [show3, setShow3] = useState(false);
     const [visible3, setVisible3] = useState(true);
     const { navigation } = props;
+    const [profile, setProfile] = useState(null);
+    useEffect(() => {
+      onGetProfile()
+    }, []);
+
+  const onGetProfile = async () => {
+      getProfile()
+          .then(res => {
+          let data = res;
+          setProfile(data);
+
+          
+          })
+          .catch(err => {
+          });
+    };
+
 
     let [fontsLoaded, error] = useFonts({
         Montserrat_600SemiBold,
@@ -24,6 +44,44 @@ const UserConfirm = (props) => {
 
     if (!fontsLoaded) {
         return null;
+    };
+
+    
+    if(!profile) return null
+
+    console.log(profile)
+
+    const updatePassword = async () => {
+      if (
+        !oldPassword ||
+        !newPassword ||
+        oldPassword.trim().length == 0 ||
+        newPassword.trim().length == 0 ||
+        confirm_password.trim().length == 0
+      ){
+        ToastAndroid.show("Vui lòng nhập đầy đủ thông tin", ToastAndroid.CENTER);
+      }
+      // else if(profile.password != oldPassword){
+      //   ToastAndroid.show("Mật khẩu hiện tại không đúng", ToastAndroid.CENTER);
+      // }
+      // else if(newPassword.length<= 3){
+      //   ToastAndroid.show("mật khẩu phải hơn 3 kí tự", ToastAndroid.CENTER);
+      // }
+      // else if(newPassword != confirm_password){
+      //     ToastAndroid.show("Xác nhận mật khẩu không khớp", ToastAndroid.CENTER);
+      // }
+      else{
+          try {
+              const res = await updatePass(newPassword);
+              console.log(res);
+              Alert.alert('Đổi mật khẩu thành công', 'Tài khoản của bạn đã được đổi mật khẩu', [
+                {text: 'OK'}
+              ])
+          } catch (error) {
+            console.log(error)
+          }
+      }
+  
     };
 
 
@@ -50,6 +108,8 @@ const UserConfirm = (props) => {
           <TextInput
             placeholder="Nhập mật khẩu"
             secureTextEntry={visible}
+            value={oldPassword}
+            onChangeText={setOldPassword}
             style={styles.TextInput}
           />
           <View style={styles.showPass}>
@@ -70,6 +130,8 @@ const UserConfirm = (props) => {
           <TextInput
             placeholder="Nhập mật khẩu"
             secureTextEntry = {visible2}
+            value={newPassword}
+            onChangeText={setNewPassword}
             style={styles.TextInput}
           />
           <View style={styles.showPass}>
@@ -90,6 +152,8 @@ const UserConfirm = (props) => {
           <TextInput
             placeholder="Nhập mật khẩu"
             secureTextEntry = {visible3}
+            value={confirm_password}
+            onChangeText={setConfirm_password}
             style={styles.TextInput}
           />
           <View style={styles.showPass}>
@@ -104,7 +168,7 @@ const UserConfirm = (props) => {
       </View>
 
         <View style={styles.buttonContainer}>
-          <Pressable style={styles.button} >
+          <Pressable style={styles.button} onPress={()=>updatePassword()}>
             <Text style={styles.save} >
               Lưu
             </Text>

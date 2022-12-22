@@ -60,3 +60,17 @@ export const order = async (data: Order) => {
     return res;
 };
 
+export const getVoucher = async () => {
+    const res = await axiosInstance.get('api/voucher');
+    return res;
+};
+
+export const getVoucherId = async (id) => {
+    const res = await axiosInstance.get(`api/voucher/${id}/detail`);
+    return res;
+  };
+
+
+
+
+

@@ -1,11 +1,35 @@
-import { StyleSheet, Text, View, Pressable, Image, ScrollView, Dimensions, FlatList } from 'react-native';
-import React from 'react';
+import { StyleSheet, Text, View, Pressable, Image, ScrollView, Dimensions, FlatList ,RefreshControl, ActivityIndicator} from 'react-native';
+import React,{useState,useEffect,useContext} from 'react'
 import { useFonts, Montserrat_600SemiBold, Montserrat_500Medium, Montserrat_700Bold, Montserrat_400Regular } from '@expo-google-fonts/montserrat';
-import endow from '../../types/dataEndow';
+import { getVoucher } from '../ProductSevice';
 
 const EndowScreen = (props) => {
 
   const { navigation } = props;
+  const [endow, setEndow] = useState([]);
+  const [refresh, setRefresh] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  useEffect(() => {
+    setIsLoading(true)
+    onGetEndow()
+  }, []);
+  const onGetEndow = async () => {
+    getVoucher()
+      .then(res => {
+        let data = res;
+        setEndow(data);
+        setIsLoading(false);
+      })
+      .catch(err => {
+        console.log('ErorrGetVoucher: ', err)
+      });
+ }
+ const onRefresh = () =>{
+  setIsLoading(true);
+  onGetEndow();
+}
+
+ console.log(endow)
 
   let [fontsLoaded, error] = useFonts({
     Montserrat_600SemiBold,
@@ -18,14 +42,14 @@ const EndowScreen = (props) => {
     return null;
   };
 
-  const renderItem = (item) => {
+  const renderItem = ({item}) => {
     return (
-      <Pressable onPress={()=> navigation.navigate("DetailEndow")}>
+      <Pressable onPress={()=> navigation.navigate("DetailEndow",{id: item._id})}>
         <View style={styles.endowContainer}>
-        <Image style={styles.endowImage} source={{ uri: item.item.image }} resizeMode={'cover'} />
+        <Image style={styles.endowImage} source={{ uri: item.image }} resizeMode={'cover'} />
         <View style={styles.endowTextContainer}>
-          <Text style={styles.endowText}>{item.item.content}</Text>
-          <Text style={styles.endowText}>Hết hạn {item.item.date}</Text>
+          <Text style={styles.endowText}>{item.body}</Text>
+          <Text style={styles.endowText}>Hết hạn {item.end_date}</Text>
         </View>
       </View>
       </Pressable>
@@ -38,19 +62,30 @@ const EndowScreen = (props) => {
         <Text style={styles.appBar}>Phiếu ưu đãi của bạn</Text>
       </View>
       <View style={styles.container}>
-        <FlatList
-          ListHeaderComponent={
-            <>
-              <Text style={styles.readyText}>Sẵn sàng sử dụng</Text>
-            </>
-          }
-          bounces={false}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={renderItem}
-          data={endow}
-          showsVerticalScrollIndicator={false}
-        />
-
+        {
+           isLoading ? 
+           <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+           <ActivityIndicator size="large" color="#CD6600" />
+           </View> :
+                   <FlatList
+                   ListHeaderComponent={
+                     <>
+                       <Text style={styles.readyText}>Sẵn sàng sử dụng</Text>
+                     </>
+                   }
+                   bounces={false}
+                   keyExtractor={(item) => item._id.toString()}
+                   renderItem={renderItem}
+                   data={endow}
+                   showsVerticalScrollIndicator={false}
+                   refreshControl={
+                     <RefreshControl
+                       refreshing={refresh}
+                       onRefresh={onRefresh}
+                     />
+                   }
+                 />
+        }
       </View>
     </View>
   )

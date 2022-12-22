@@ -1,13 +1,34 @@
 import { StyleSheet, Text, View,TouchableOpacity, Image, FlatList,ScrollView } from 'react-native'
-import React,{useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import { Ionicons } from '@expo/vector-icons'; 
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 import { AntDesign } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons'; 
 import { observer } from 'mobx-react';
 import { cartStore } from '../../mobx/cart_store';
-const DetailEndow = (props) => {
-  const {navigation} = props
+import { getVoucherId } from '../ProductSevice';
+const DetailEndow = (props,route) => {
+  const {navigation,route:{params: {id},},} = props
+  const [endowDetail, setEndowtDetail] = useState();
+  useEffect(() => {
+    // setIsLoading(true)  
+    onGetDetail();
+  }, []);
+
+const onGetDetail = async () => {
+getVoucherId(id)
+    .then(res => {
+    let data = res;
+    setEndowtDetail(data);
+    // setIsLoading(false)  
+    })
+    .catch(err => {
+    });
+}
+
+if(!endowDetail){
+    return null
+}
   return (
     <View style ={ styles.container}>
       <View style = {styles.headerContainer}>
@@ -41,17 +62,17 @@ const DetailEndow = (props) => {
 
         <View style={{}}>
           <View style={{alignItems: 'center', paddingLeft:10, paddingRight: 20}}>
-            <Image style={{width: 250, height: 300}} source={{ uri: 'https://i.pinimg.com/564x/39/53/b1/3953b16fbaba394a27e65424bba962c0.jpg' }}
+            <Image style={{width: 250, height: 300}} source={{ uri: endowDetail.image }}
             resizeMode={'cover'} />
           </View>
 
           <View style={{paddingTop: 10, paddingLeft: 10, paddingRight: 20}}>
-            <Text style ={{fontSize: 18, fontWeight: '500', textAlign: 'center'}}>Ưu đãi cho đơn hàng đầu tiên giành cho khách hàng mới</Text>
+            <Text style ={{fontSize: 18, fontWeight: '500', textAlign: 'center'}}>{endowDetail.body}</Text>
             <View style ={{opacity: 0.5,marginTop: 10,borderWidth: 0.3,borderColor:'#9E9E9E',}}></View>
-            <Text style ={{fontSize: 18, fontWeight: '500', textAlign: 'center', marginTop: 5}}>CODE: LAVACOFFE</Text>
+            <Text style ={{fontSize: 18, fontWeight: '500', textAlign: 'center', marginTop: 5,  }}>CODE: {endowDetail.code}</Text>
             <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingTop: 10}}>
               <Text style={{fontWeight: '500'}}>Ngày hết hạn</Text>
-              <Text style={{color: 'red', fontWeight:'500'}}>12/12/2022</Text>
+              <Text style={{color: 'red', fontWeight:'500'}}>{endowDetail.end_date}</Text>
             </View>
           </View>
           

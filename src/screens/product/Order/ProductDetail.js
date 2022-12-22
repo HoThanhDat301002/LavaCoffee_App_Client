@@ -9,28 +9,6 @@ import { AntDesign } from '@expo/vector-icons';
 import { observer } from 'mobx-react';
 import { getProductId } from '../ProductSevice';
 
-export const data = [
-    {
-        id: 10,
-        record: 'Ngọt',
-    },
-    {
-        id:13,
-        record: 'Ít ngọt',
-    },
-    {
-        id:22,
-        record: 'Ít đá',
-    },
-    {
-        id: 21,
-        record: 'Để đá riêng',
-    },
-    {
-        id: 15,
-        record: 'Không lấy ống hút và muỗng nhựa',
-    }
-]
 
 const ProductDetail = (props,route) => {
     const {navigation,route:{params: {id},},} = props

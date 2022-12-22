@@ -1,5 +1,5 @@
 const constants= {
-    BASSE_URL: 'http://192.168.100.77:3000',
+    BASSE_URL: 'http://192.168.1.6:3000',
 }
 
 export default constants;

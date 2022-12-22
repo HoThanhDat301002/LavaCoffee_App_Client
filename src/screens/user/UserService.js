@@ -47,6 +47,13 @@ export const updateProfile = async (name,phone) => {
   return res;
 }
 
+export const updatePass = async (password) => {
+  const data = { password };
+  const id = await AsyncStorage.getItem('userId');
+  const res = await axiosInstance.post(`/api/users/${id}/update`,data);
+  return res;
+}
+
 export const getAddress = async () => {
   const res = await axiosInstance.get('https://provinces.open-api.vn/api/?depth=3');
   return res;
