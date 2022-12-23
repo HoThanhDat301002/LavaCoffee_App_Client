@@ -13,7 +13,7 @@ const DetailEndow = (props) => {
         <View style={styles.itemHeaderContainer}>
           {/* btn back */}
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Ionicons name="arrow-back" size={14} color="black" />
+            <Ionicons name="arrow-back" size={24} color="black" />
           </TouchableOpacity>
           <Text style={styles.textTitle}>Chi tiết ưu đãi</Text>
           <View>
@@ -21,17 +21,17 @@ const DetailEndow = (props) => {
               cartStore.count > 0 ?
                 <View style={styles.iconCartContainer}>
                   <TouchableOpacity onPress={() => navigation.navigate('CartProduct')}>
-                    <View style={{ paddingRight: 10 }}>
+                    <View style={{ paddingRight: 20 }}>
                       <View style={styles.countCartContainer}>
                         <Text style={styles.textCountCart}>{cartStore.count.toString()}</Text>
                       </View>
                     </View>
-                    <AntDesign name="shoppingcart" size={15} color="black" />
+                    <AntDesign name="shoppingcart" size={25} color="black" />
                   </TouchableOpacity>
                 </View> :
                 <View style={styles.iconCartContainer}>
                   <TouchableOpacity onPress={() => navigation.navigate('CartProduct')}>
-                    <AntDesign name="shoppingcart" size={15} color="black" />
+                    <AntDesign name="shoppingcart" size={25} color="black" />
                   </TouchableOpacity>
                 </View>
             }
@@ -41,17 +41,31 @@ const DetailEndow = (props) => {
 
       <View style={{}}>
         <View style={{ alignItems: 'center', paddingLeft: 10, paddingRight: 20 }}>
-          <Image style={{ width: 250, height: 300 }} source={{ uri: 'https://i.pinimg.com/564x/39/53/b1/3953b16fbaba394a27e65424bba962c0.jpg' }}
+          <Image style={{ width: 250, height: 300 }}
+            source={{ uri: 'https://i.pinimg.com/564x/39/53/b1/3953b16fbaba394a27e65424bba962c0.jpg' }}
             resizeMode={'cover'} />
         </View>
 
         <View style={{ paddingTop: 10, paddingLeft: 10, paddingRight: 20 }}>
-          <Text style={{ fontSize: 18, fontWeight: '500', textAlign: 'center' }}>Ưu đãi cho đơn hàng đầu tiên giành cho khách hàng mới</Text>
+          <Text
+            style={{ fontSize: 18, fontWeight: '500', textAlign: 'center' }}>
+            Ưu đãi cho đơn hàng đầu tiên giành cho khách hàng mới
+          </Text>
           <View style={{ opacity: 0.5, marginTop: 10, borderWidth: 0.3, borderColor: '#9E9E9E', }}></View>
-          <Text style={{ fontSize: 18, fontWeight: '500', textAlign: 'center', marginTop: 5 }}>CODE: LAVACOFFE</Text>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingTop: 10 }}>
-            <Text style={{ fontWeight: '500' }}>Ngày hết hạn</Text>
-            <Text style={{ color: 'red', fontWeight: '500' }}>12/12/2022</Text>
+          <Text
+            style={{ fontSize: 18, fontWeight: '500', textAlign: 'center', marginTop: 5 }}>
+            CODE: LAVACOFFE
+          </Text>
+          <View style={{
+            flexDirection: 'row', justifyContent: 'space-between',
+            alignItems: 'center', paddingTop: 10
+          }}>
+            <Text
+              style={{ fontWeight: '500' }}>Ngày hết hạn
+            </Text>
+            <Text
+              style={{ color: 'red', fontWeight: '500' }}>12/12/2022
+            </Text>
           </View>
         </View>
 
