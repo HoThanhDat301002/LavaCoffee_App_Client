@@ -11,8 +11,9 @@ const DetailEndow = (props) => {
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <View style={styles.itemHeaderContainer}>
+          {/* btn back */}
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Ionicons name="arrow-back" size={24} color="black" />
+            <Ionicons name="arrow-back" size={14} color="black" />
           </TouchableOpacity>
           <Text style={styles.textTitle}>Chi tiết ưu đãi</Text>
           <View>
@@ -20,17 +21,17 @@ const DetailEndow = (props) => {
               cartStore.count > 0 ?
                 <View style={styles.iconCartContainer}>
                   <TouchableOpacity onPress={() => navigation.navigate('CartProduct')}>
-                    <View style={{ paddingRight: 20 }}>
+                    <View style={{ paddingRight: 10 }}>
                       <View style={styles.countCartContainer}>
                         <Text style={styles.textCountCart}>{cartStore.count.toString()}</Text>
                       </View>
                     </View>
-                    <AntDesign name="shoppingcart" size={25} color="black" />
+                    <AntDesign name="shoppingcart" size={15} color="black" />
                   </TouchableOpacity>
                 </View> :
                 <View style={styles.iconCartContainer}>
                   <TouchableOpacity onPress={() => navigation.navigate('CartProduct')}>
-                    <AntDesign name="shoppingcart" size={25} color="black" />
+                    <AntDesign name="shoppingcart" size={15} color="black" />
                   </TouchableOpacity>
                 </View>
             }
