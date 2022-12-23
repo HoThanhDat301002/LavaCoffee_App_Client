@@ -1,12 +1,14 @@
 import { StyleSheet, Text, View, Pressable, Image, ScrollView, Dimensions, FlatList } from 'react-native';
 import React from 'react';
-import { useFonts, Montserrat_600SemiBold, Montserrat_500Medium, Montserrat_700Bold, Montserrat_400Regular } from '@expo-google-fonts/montserrat';
+import { useFonts, Montserrat_600SemiBold, Montserrat_500Medium, Montserrat_700Bold, Montserrat_400Regular }
+  from '@expo-google-fonts/montserrat';
 import endow from '../../types/dataEndow';
 
 const EndowScreen = (props) => {
 
   const { navigation } = props;
 
+  //Font 
   let [fontsLoaded, error] = useFonts({
     Montserrat_600SemiBold,
     Montserrat_500Medium,
@@ -17,17 +19,18 @@ const EndowScreen = (props) => {
   if (!fontsLoaded) {
     return null;
   };
+  //Font 
 
   const renderItem = (item) => {
     return (
-      <Pressable onPress={()=> navigation.navigate("DetailEndow")}>
+      <Pressable onPress={() => navigation.navigate("DetailEndow")}>
         <View style={styles.endowContainer}>
-        <Image style={styles.endowImage} source={{ uri: item.item.image }} resizeMode={'cover'} />
-        <View style={styles.endowTextContainer}>
-          <Text style={styles.endowText}>{item.item.content}</Text>
-          <Text style={styles.endowText}>Hết hạn {item.item.date}</Text>
+          <Image style={styles.endowImage} source={{ uri: item.item.image }} resizeMode={'cover'} />
+          <View style={styles.endowTextContainer}>
+            <Text style={styles.endowText}>{item.item.content}</Text>
+            <Text style={styles.endowText}>Hết hạn {item.item.date}</Text>
+          </View>
         </View>
-      </View>
       </Pressable>
     )
   }
