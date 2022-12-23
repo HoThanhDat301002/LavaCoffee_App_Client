@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, Pressable, Image, Dimensions } from 'react-nati
 import React from 'react';
 import { Entypo } from '@expo/vector-icons';
 import { useFonts, Montserrat_600SemiBold, Montserrat_500Medium, Montserrat_700Bold, Montserrat_400Regular } from '@expo-google-fonts/montserrat';
+import { favoriteStore } from '../../mobx/favorite';
 
 const FavouriteProduct = (props) => {
 
@@ -18,6 +19,12 @@ const FavouriteProduct = (props) => {
         return null;
     };
 
+    const formatCash = (str) => {
+        return str.split('').reverse().reduce((prev, next, index) => {
+            return ((index % 3) ? next : (next + '.')) + prev
+        })
+      }
+
     return (
         <View>
             <Pressable onPress={() => navigation.goBack()} style={styles.appBarContainer}>
@@ -25,20 +32,23 @@ const FavouriteProduct = (props) => {
                 <Text style={styles.appBar}>Sản phẩm yêu thích</Text>
             </Pressable>
             <View style={styles.container}>
-                <View style={styles.productContainer}>
-                    <Image style={styles.productImage} source={require('../../../assets/bac-siu.jpg')} resizeMode={'cover'} />
-                    <View style={styles.productText}>
-                        <Text numberOfLines={1} style={styles.productName}>Bạc Sỉu</Text>
-                        <Text style={styles.productPrice}>35.000đ</Text>
-                    </View>
-                </View>
-                <View style={styles.productContainer}>
-                    <Image style={styles.productImage} source={require('../../../assets/tra_dao.jpg')} resizeMode={'cover'} />
-                    <View style={styles.productText}>
-                        <Text numberOfLines={1} style={styles.productName}>Trà Đào Cam Sả - Đá</Text>
-                        <Text style={styles.productPrice}>55.000đ</Text>
-                    </View>
-                </View>
+                {
+                    favoriteStore.items.map(((e) => {
+                        return(
+                            <Pressable key ={e.product._id} onPress={() => navigation.navigate('ProductDetail', {id: e.product._id})}>
+                                <View style={styles.productContainer} >
+                                <Image style={styles.productImage} source={{uri: e.product.image[0]}} resizeMode={'cover'} />
+                                <View style={styles.productText}>
+                                    <Text numberOfLines={1} style={styles.productName}>{e.product.name}</Text>
+                                    <Text style={styles.productPrice}>{formatCash(e.product.price.toString())}đ</Text>
+                                </View>
+                            </View>
+                            </Pressable>
+                        )
+                        
+                    }))
+                }
+                
                 
             </View>
         </View>

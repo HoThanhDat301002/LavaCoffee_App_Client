@@ -5,6 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import('../../mobx/cart_store')
 import ModalView from "react-native-modal";
 import { cartStore,CartItem } from '../../mobx/cart_store';
+import { favoriteStore,FavoriteItem } from '../../mobx/favorite';
 import { AntDesign } from '@expo/vector-icons';
 import { observer } from 'mobx-react';
 import { getProductId } from '../ProductSevice';
@@ -19,6 +20,7 @@ const ProductDetail = (props,route) => {
     const [qwe, setQwe] = useState()
     const [modalVisible, setModalVisible] = useState(false);
     const [modalVisibleCart, setModalVisibleCart] = useState(false);
+    const [modalVisibleFavorite, setModalVisibleFavorite] = useState(false);
     const [quantity, setQuatity] = useState(1);
     const [recordInput, setRecordIput] = useState('');
     const [recordInputUpdate, setRecordIputUpdate] = useState('');
@@ -65,10 +67,23 @@ const ProductDetail = (props,route) => {
         }, 1000);
       };
 
+      const showModalFavorite = () => {
+        setModalVisibleFavorite(true);
+        setTimeout(() => {
+            setModalVisibleFavorite(false);
+        }, 1000);
+      };
 
-      const addToCart = (items:CartItem) => {
+
+    const addToCart = (items:CartItem) => {
         if(productDetail){
         cartStore.addItem(items)
+        }
+    }
+
+    const addToFavorite = (items:FavoriteItem) => {
+        if(productDetail){
+        favoriteStore.addItem(items)
         }
    }
 
@@ -142,7 +157,7 @@ const ProductDetail = (props,route) => {
                 <View style={styles.imageContainer}>
                     {
                         productDetail.image.map(((e) => {
-                            console.log('====>',e)
+                            // console.log('====>',e)
                             return(
                                 <View key={e}>
                                     <Image style={{width:300, height: 400}} source = {{uri: e}} resizeMode={"cover"}/>
@@ -155,12 +170,22 @@ const ProductDetail = (props,route) => {
                         
         <View style = {styles.deltaiContainer}>
             <View style = {styles.textNameContainer}>
-                <Text style = {styles.textName}>{productDetail.name}</Text>
+                <Text numberOfLines={2} style = {styles.textName}>{productDetail.name}</Text>
                 <View>
                     {
                         heart == false ?
                         <View>
-                            <TouchableOpacity onPress={()=>setHeart(true)}>
+                            <TouchableOpacity onPress={()=> {
+                                setHeart(true)
+                                    if(productDetail){
+                                        const itemDetail: FavoriteItem = {
+                                            product: productDetail,
+                                            quantity: quantity
+                                        }
+                                        addToFavorite(itemDetail)
+                                        showModalFavorite()
+                                    }
+                            }}>
                             <Ionicons name="ios-heart-outline" size={24} color="black" />
                         </TouchableOpacity>
                         </View>
@@ -339,13 +364,44 @@ const ProductDetail = (props,route) => {
                         flexDirection: 'row'
                     }}>
                     <Image style= {{width:20,height:20}} source={require("../../../assets/success-image.png")} />
-                    <Text style={{fontSize: 14, fontFamily:'Montserrat_500Medium'}}>
+                        <Text style={{fontSize: 14, fontFamily:'Montserrat_500Medium'}}>
                         Đã thêm vào giỏ hàng
+                        </Text>
+                    </View>
+                    <View></View>
+                </View>
+        </Modal>
+
+        <View>
+        <Modal
+                animationType="fade"
+                transparent
+                visible ={modalVisibleFavorite}
+                >
+                <View style={{flexDirection: 'row', justifyContent: 'space-between', flex: 1, paddingTop: 55}}>
+                    <View></View>
+                    <View
+                    style={{
+                        paddingLeft: 10,
+                        paddingRight: 10,
+                        backgroundColor: 'white',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        width: 220,
+                        height: 50,
+                        borderRadius: 7,
+                        elevation: 3,
+                        flexDirection: 'row'
+                    }}>
+                    <Image style= {{width:20,height:20}} source={require("../../../assets/success-image.png")} />
+                    <Text style={{fontSize: 14, fontFamily:'Montserrat_500Medium'}}>
+                    Đã thêm vào yêu thích
                     </Text>
                     </View>
                     <View></View>
                 </View>
         </Modal>
+        </View>
   
         <View style = {styles.footerContainer}>
             <View style = {styles.buttonContainer}>
@@ -673,8 +729,9 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
     },
     textName:{
+        width: 300,
         fontSize: 26,
-        fontWeight: '500',
+        fontWeight: '500'
     },
 
     textNameContainer:{

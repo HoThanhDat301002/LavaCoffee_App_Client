@@ -49,7 +49,7 @@ const DetailHistory = ( props,route) => {
                 try {
                     const res = await orderCancelId(id,statusCancel);
                     setRefreshKey(oldKey => oldKey +1)
-                    navigation.navigate('HomeScreen')
+                    navigation.navigate('ProfileScreen')
                     } catch (error) {
                     console.log("onOrderCancel ne error", error);
                     }
@@ -191,44 +191,18 @@ const DetailHistory = ( props,route) => {
 
             <View style={{paddingTop: 10, paddingLeft: 10, paddingRight: 20}}>
             {
-                        orderDetails.status == 'CANCEL' ? 
-                        <TouchableOpacity onPress={()=> {
-                            Alert.alert('Hủy đơn hàng', 'Đơn hàng này đang ở trạng thái hủy', [
-                                {text: 'Ok',}
-                              ])
-                        }}>
-                        <View style={styles.buttonOrder}>
-                            <Text style={styles.textButton}>HỦY ĐƠN</Text>
-                        </View>
-                        </TouchableOpacity> :
-
-                        orderDetails.status == 'COMPLETE' ? 
-                        <TouchableOpacity onPress={()=> {
-                            Alert.alert('Hủy đơn hàng', 'Đơn hàng này đã giao thành công', [
-                                {text: 'Ok',}
-                              ])
-                        }}>
-                        <View style={styles.buttonOrder}>
-                            <Text style={styles.textButton}>HỦY ĐƠN</Text>
-                        </View>
-                        </TouchableOpacity>:
-                        
-                        orderDetails.status == 'DELIVERING' ?
-                        <TouchableOpacity onPress={()=> {
-                            Alert.alert('Hủy đơn hàng', 'Đơn hàng này đang vận chuyển không thể hủy', [
-                                {text: 'Ok',}
-                              ])
-                        }}>
-                        <View style={styles.buttonOrder}>
-                            <Text style={styles.textButton}>HỦY ĐƠN</Text>
-                        </View>
-                        </TouchableOpacity>
-                        : 
+                        orderDetails.status == 'PROCESSING' ? 
                         <TouchableOpacity onPress={onOrderCancel}>
                         <View style={styles.buttonOrder}>
                             <Text style={styles.textButton}>HỦY ĐƠN</Text>
                         </View>
                         </TouchableOpacity>
+                        : 
+                        <Pressable>
+                        <View style={[styles.buttonOrder,{backgroundColor: '#AAAAAA'}]}>
+                            <Text style={styles.textButton}>HỦY ĐƠN</Text>
+                        </View>
+                        </Pressable>
                     }
             </View>
         </View>

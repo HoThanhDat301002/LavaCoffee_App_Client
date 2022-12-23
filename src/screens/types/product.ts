@@ -4,14 +4,14 @@ export interface Product {
     price: number
     description: string 
     category_id: string 
-    image: image[]
-    released: Date,
+    image: []
+    // released: Date,
     }
 
 
 export interface image {
     id: number 
-    thumbnail: string
+    image: string
 }
 
         

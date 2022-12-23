@@ -68,10 +68,10 @@ const CartProduct = (props) => {
                                     <View style={styles.cartContainer}>
                                         <View style={[styles.textQuantityContainer, {height: 100,paddingLeft: 10, flexDirection: 'row', paddingTop: 10}]}>
                                             <View>
-                                                <Image source={{uri: e.product.image[0].thumbnail}} style = {{width: 70, height: 70, borderRadius: 7}}/>
+                                                <Image source={{uri: e.product.image[0]}} style = {{width: 70, height: 70, borderRadius: 7}}/>
                                             </View>
                                             <View style = {{paddingLeft: 10}}>
-                                                <Text style={styles.textName}>{e.product.name}</Text>
+                                                <Text numberOfLines={2} style={styles.textName}>{e.product.name}</Text>
                                                 <Text style={styles.textPrice}>{formatCash(e.price.toString())}đ</Text>
                                                 {/* {
                                                     e.price == 39000 ? <Text style={styles.textPrice}>Lớn</Text> :
@@ -118,7 +118,9 @@ const CartProduct = (props) => {
            </View>
         </View>
         <View style={styles.buttonOrderContainer}>
-            <TouchableOpacity onPress={() => navigation.navigate('PaymentAddress')}>
+            {
+                cartStore.count > 0 ?
+                <TouchableOpacity onPress={() => navigation.navigate('PaymentAddress')}>
                 <View style={[ styles.buttonOrder]}>
                     <View></View>
                     <View><Text style={styles.textButton}>Thanh toán</Text></View>
@@ -127,6 +129,17 @@ const CartProduct = (props) => {
                     </View>
                 </View>
             </TouchableOpacity>
+            :
+            <TouchableOpacity>
+                <View style={[ styles.buttonOrder,{backgroundColor: '#AAAAAA'}]}>
+                    <View></View>
+                    <View><Text style={styles.textButton}>Thanh toán</Text></View>
+                    <View>
+                    <MaterialIcons name="navigate-next" size={24} color="white" />
+                    </View>
+                </View>
+            </TouchableOpacity>
+            }
         </View>
       </View>
     </View>

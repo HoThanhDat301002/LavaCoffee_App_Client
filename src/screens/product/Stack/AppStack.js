@@ -34,6 +34,7 @@ export const HomeStack = () => {
                 <RootStack.Screen name="OrderSuccess" component={OrderSuccess} />
                 <RootStack.Screen name='BuyingHistory' component={BuyingHistory} />
                 <RootStack.Screen name="DetailHistory" component={DetailHistory} />
+                
             </RootStack.Navigator>
     )
 }
@@ -66,6 +67,8 @@ export const AccountStack = () => {
             <RootStack.Screen name='UserInformation' component={UserInformation} />
             <RootStack.Screen name="OrderSuccess" component={OrderSuccess} />
             <RootStack.Screen name="DetailHistory" component={DetailHistory} />
+            <RootStack.Screen name="ProductDetail" component={ProductDetail} />
+            <RootStack.Screen name="HomeScreen" component={HomeScreen} />
         </RootStack.Navigator>
     )
 }

@@ -31,6 +31,12 @@ const EndowScreen = (props) => {
 
  console.log(endow)
 
+ const formatCash = (str) => {
+  return str.split('').reverse().reduce((prev, next, index) => {
+      return ((index % 3) ? next : (next + '.')) + prev
+  })
+}
+
   let [fontsLoaded, error] = useFonts({
     Montserrat_600SemiBold,
     Montserrat_500Medium,
@@ -41,6 +47,7 @@ const EndowScreen = (props) => {
   if (!fontsLoaded) {
     return null;
   };
+  console.log(endow)
 
   const renderItem = ({item}) => {
     return (
@@ -49,6 +56,7 @@ const EndowScreen = (props) => {
         <Image style={styles.endowImage} source={{ uri: item.image }} resizeMode={'cover'} />
         <View style={styles.endowTextContainer}>
           <Text style={styles.endowText}>{item.body}</Text>
+          <Text style={styles.endowText}>{formatCash(item.discount.toString())}đ</Text>
           <Text style={styles.endowText}>Hết hạn {item.end_date}</Text>
         </View>
       </View>

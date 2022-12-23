@@ -65,6 +65,14 @@ export class CartProduct {
     }
   }
 
+  @computed delteteItem() {
+    for(var i = 0; i < this.items.length; i++){
+      this.items.splice(i,this.items.length);
+      
+  };
+}
+
+
   
 
   @computed get CalculateTotal() {

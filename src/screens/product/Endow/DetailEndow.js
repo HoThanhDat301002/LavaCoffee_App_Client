@@ -26,6 +26,12 @@ getVoucherId(id)
     });
 }
 
+const formatCash = (str) => {
+  return str.split('').reverse().reduce((prev, next, index) => {
+      return ((index % 3) ? next : (next + '.')) + prev
+  })
+}
+
 if(!endowDetail){
     return null
 }
@@ -69,6 +75,7 @@ if(!endowDetail){
           <View style={{paddingTop: 10, paddingLeft: 10, paddingRight: 20}}>
             <Text style ={{fontSize: 18, fontWeight: '500', textAlign: 'center'}}>{endowDetail.body}</Text>
             <View style ={{opacity: 0.5,marginTop: 10,borderWidth: 0.3,borderColor:'#9E9E9E',}}></View>
+            <Text style ={{fontSize: 18, fontWeight: '500', textAlign: 'center', marginTop: 5,  }}>Ưu đãi: {formatCash(endowDetail.discount.toString())}đ</Text>
             <Text style ={{fontSize: 18, fontWeight: '500', textAlign: 'center', marginTop: 5,  }}>CODE: {endowDetail.code}</Text>
             <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingTop: 10}}>
               <Text style={{fontWeight: '500'}}>Ngày hết hạn</Text>

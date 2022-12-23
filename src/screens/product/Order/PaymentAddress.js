@@ -12,7 +12,7 @@ import {
     Alert
 } from "react-native";
 import React, { useEffect, useState } from 'react'
-import { getAddress } from "../../user/UserService";
+import { getAddress, getProfile } from "../../user/UserService";
 import { Ionicons } from '@expo/vector-icons'; 
 import RNPickerSelect from "react-native-picker-select";
 import { cartStore } from "../../mobx/cart_store";
@@ -33,23 +33,35 @@ const PaymentAddress = (props) => {
     const [textCity, setTextCity] = useState("");
     const [textDistrict, setTextDistrict] = useState("");
     const [feeDelivery, setFeeDelivery] = useState();
-
+    const [profile, setProfile] = useState(null);
     useEffect(() => {
         onDistric()
         onGetAddress()
         setWard([])
+        onGetProfile()
       }, [selectedProvince]);
 
       useEffect(() => {
         onWards()
       }, [selectedDistric]);
 
+      const onGetProfile = async () => {
+        getProfile()
+            .then(res => {
+            let data = res;
+            setProfile(data);
+            setName(data.name)
+            setPhone(data.phone)
+            
+            })
+            .catch(err => {
+            });
+      };
+
       const onGetAddress = async () => {
         getAddress()
           .then(res => {
             let data = res;
-        
-            
             data.find((e) => {
               if(e.code == 79){
                 // console.log('sadsad',e)
@@ -96,7 +108,7 @@ const PaymentAddress = (props) => {
         })
 
         if(!province) return null;
-
+        if(!profile) return null
         // ward.find((w) =>{
         //   if(w.name === "Gò Vấp"){
         //     setFeeDelivery(15000)
@@ -105,7 +117,7 @@ const PaymentAddress = (props) => {
         //   }
         // })
       }
-      console.log(selectedProvince)
+      // console.log(selectedProvince)
 
       // if(selectedWards == 'Gò Vấp'){
       //   setFeeDelivery(15000)

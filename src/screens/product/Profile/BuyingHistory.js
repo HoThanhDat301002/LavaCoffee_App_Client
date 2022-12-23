@@ -65,7 +65,7 @@ const BuyingHistory = (props) => {
                     {
                         item.status === "PROCESSING" ? <Text style={styles.productStatus}>Đang thực hiện</Text> :
                         item.status === "CANCEL" ? <Text style={[styles.productStatus, { color: 'red' }]}>Đã hủy</Text> :
-                        item.status === "COMPLETE" ? <Text style={[styles.productStatus, { color: 'red' }]}>Đã hoàn tất</Text> :
+                        item.status === "COMPLETE" ? <Text style={[styles.productStatus]}>Đã hoàn tất</Text> :
                         <Text style={[styles.productStatus]}>Đang vận chuyển</Text>
                     }
 

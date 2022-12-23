@@ -1,11 +1,11 @@
 import { StyleSheet, Text, View,TouchableOpacity, Image, FlatList,ScrollView,TextInput, Pressable,Alert } from 'react-native'
-import React,{useState} from 'react'
+import React,{useState,useEffect} from 'react'
 import { Ionicons } from '@expo/vector-icons'; 
 import { Feather } from '@expo/vector-icons'; 
 import { observer } from 'mobx-react';
 import { orderStore } from '../../mobx/order_store';
 import { cartStore } from '../../mobx/cart_store';
-import { order } from '../ProductSevice';
+import { getVoucher, order } from '../ProductSevice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const dataPay = [
@@ -29,7 +29,45 @@ export const dataPay = [
 const OrderConfirmation = (props) => {
     const {navigation} = props
     const [mood, setMood] = useState('CASH')
+    const [codeDiscount, setCodeDiscount] = useState("")
+    const [discount, setDiscount] = useState(0)
     const [address, setAddress] = useState()
+    const [endow, setEndow] = useState([]);
+    const [refreshKey, setRefreshKey] = useState(0);
+    useEffect(() => {
+        onGetEndow()
+      }, [refreshKey]);
+
+      const onGetEndow = async () => {
+        getVoucher()
+          .then(res => {
+            let data = res;
+            setEndow(data);
+            data.find((e) => {
+                if(e.code == codeDiscount){
+                  // console.log('sadsad',e)
+                  setDiscount(e.discount)
+                } 
+              }) 
+            console.log(data)
+          })
+          .catch(err => {
+            console.log('ErorrGetVoucher: ', err)
+          });
+     }
+
+     const onDiscount =  () => {
+        endow.find((dist) =>{
+          if(dist.code == codeDiscount){
+            setDiscount(dist.discount)
+            console.log("logggg", dist.discount)
+          }
+         
+        })
+        setDiscount(0)
+      }
+
+      console.log(">>>>", codeDiscount)
 
     const formatCash = (str) => {
         return str.split('').reverse().reduce((prev, next, index) => {
@@ -57,15 +95,15 @@ const OrderConfirmation = (props) => {
                     code: "",
                     feeDelivery: orderStore.itemInfo[orderStore.itemInfo.length-1].feeDelivery,
                     moneyTotal: orderStore.itemInfo[orderStore.itemInfo.length-1].moneyTotal,
-                    moneyDiscount: orderStore.itemInfo[orderStore.itemInfo.length-1].moneyDiscount,
-                    moneyFinal: orderStore.itemInfo[orderStore.itemInfo.length-1].moneyFinal,
+                    moneyDiscount: discount,
+                    moneyFinal: orderStore.itemInfo[orderStore.itemInfo.length-1].moneyFinal - discount,
                     user_id: id,
                     released: new Date()
-                      
                     }
                 );
                 navigation.navigate('OrderSuccess')
                 console.log('order3>>>>>>',res);
+                
               } catch (error) {
                 console.log("onOrderStep3 error", error.data);
                 }
@@ -163,8 +201,13 @@ const OrderConfirmation = (props) => {
                             <TextInput
                                 placeholder="Nhập mã"
                                 style={styles.TextInput}
+                                value={codeDiscount}
+                                onChangeText={setCodeDiscount}
                             />
-                            <TouchableOpacity>
+                            <TouchableOpacity onPress={()=> {
+                                onDiscount();
+                                setRefreshKey(oldKey => oldKey +1)
+                            }}>
                             <View style={styles.buttonCode}>
                                 <Text style ={styles.textCode}>Áp dụng</Text>
                             </View>
@@ -174,9 +217,17 @@ const OrderConfirmation = (props) => {
                     </View>
 
                     <View style = {styles.textInfoContainer}>
+                        <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingTop: 10}}>
+                            <Text style = {styles.textThanhTien}>Tiền khuyến mãi</Text>
+                            <Text>- {formatCash(discount.toString())}đ</Text>
+                        </View>
+                        <View style={styles.lineStyle}></View>
+                    </View>
+
+                    <View style = {styles.textInfoContainer}>
                         <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
                             <Text style = {[styles.textThanhTien, {fontWeight: '700'}]}>Số tiền thanh toán</Text>
-                            <Text style = {{fontWeight: '700'}}>{formatCash(orderStore.itemInfo[orderStore.itemInfo.length-1].moneyFinal.toString())}đ</Text>
+                            <Text style = {{fontWeight: '700'}}>{formatCash((orderStore.itemInfo[orderStore.itemInfo.length-1].moneyFinal - discount).toString())}đ</Text>
                         </View>
                     </View>
             </View>
@@ -222,7 +273,7 @@ const OrderConfirmation = (props) => {
                         <View style ={{width: 5, height: 5, backgroundColor: 'white', borderRadius: 10,marginLeft:5}}></View>
                         <Text style={{color:'white',marginLeft: 5}}>{cartStore.count} sản phẩm</Text>
                     </View>
-                    <Text style ={styles.textCode}>{formatCash(orderStore.itemInfo[orderStore.itemInfo.length-1].moneyFinal.toString())}đ</Text>
+                    <Text style ={styles.textCode}>{formatCash((orderStore.itemInfo[orderStore.itemInfo.length-1].moneyFinal - discount).toString()) }đ</Text>
                 </View>
                 <Pressable onPress={() => onOrder()}>
                     <View style ={{paddingRight: 20, paddingLeft: 20, paddingBottom: 5, paddingTop: 5, backgroundColor: 'white', borderRadius: 12, elevation: 2}}>
@@ -345,7 +396,7 @@ const styles = StyleSheet.create({
 
     OrderFinalContainer:{
         marginTop: 20,
-        height:230,
+        paddingBottom: 20,
         backgroundColor:'white'
     },
     
@@ -434,6 +485,7 @@ const styles = StyleSheet.create({
         color: 'black'
     },
     textInfoContainer:{
+        paddingTop: 10,
         paddingRight: 20,
         paddingLeft: 10,
     },

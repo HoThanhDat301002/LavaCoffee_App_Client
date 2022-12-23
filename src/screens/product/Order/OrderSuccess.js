@@ -10,6 +10,7 @@ import {
     TextInput,
 } from "react-native";
 import React from 'react'
+import { cartStore } from "../../mobx/cart_store";
 
 const OrderSuccess = (props) => {
     const {navigation} = props;
@@ -29,12 +30,18 @@ const OrderSuccess = (props) => {
       </View>
 
       <View style={styles.buttonContainer}>
-            <TouchableOpacity onPress={() => navigation.navigate("HomeScreen")}>
+            <TouchableOpacity onPress={() => {
+              navigation.navigate("CartProduct")
+              cartStore.delteteItem();
+              }}>
                 <View style={styles.buttonBack}>
-                <Text style={styles.textBack}>Về trang chủ</Text>
+                <Text style={styles.textBack}>Về giỏ hàng</Text>
                 </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate("BuyingHistory")}>
+            <TouchableOpacity onPress={() => {
+              navigation.navigate("BuyingHistory")
+              cartStore.delteteItem();
+              }}>
                 <View style={styles.buttonNext}>
                 <Text style={styles.textNext}>Xem lịch sử mua hàng</Text>
                 </View>
