@@ -40,6 +40,7 @@ const EndowScreen = (props) => {
       <View style={styles.appBarContainer}>
         <Text style={styles.appBar}>Phiếu ưu đãi của bạn</Text>
       </View>
+
       <View style={styles.container}>
         <FlatList
           ListHeaderComponent={
@@ -53,8 +54,8 @@ const EndowScreen = (props) => {
           data={endow}
           showsVerticalScrollIndicator={false}
         />
-
       </View>
+      
     </View>
   )
 }
