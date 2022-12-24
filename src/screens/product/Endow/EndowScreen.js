@@ -1,6 +1,9 @@
-import { StyleSheet, Text, View, Pressable, Image, ScrollView, Dimensions, FlatList ,RefreshControl, ActivityIndicator} from 'react-native';
-import React,{useState,useEffect,useContext} from 'react'
-import { useFonts, Montserrat_600SemiBold, Montserrat_500Medium, Montserrat_700Bold, Montserrat_400Regular } from '@expo-google-fonts/montserrat';
+import { StyleSheet, Text, View, Pressable, Image, ScrollView, Dimensions, 
+  FlatList, RefreshControl, ActivityIndicator } from 'react-native';
+import React, { useState, useEffect, useContext } from 'react'
+import { useFonts, Montserrat_600SemiBold, Montserrat_500Medium,
+  Montserrat_700Bold, Montserrat_400Regular
+} from '@expo-google-fonts/montserrat';
 import { getVoucher } from '../ProductSevice';
 
 const EndowScreen = (props) => {
@@ -9,10 +12,12 @@ const EndowScreen = (props) => {
   const [endow, setEndow] = useState([]);
   const [refresh, setRefresh] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
   useEffect(() => {
     setIsLoading(true)
     onGetEndow()
   }, []);
+
   const onGetEndow = async () => {
     getVoucher()
       .then(res => {
@@ -23,19 +28,20 @@ const EndowScreen = (props) => {
       .catch(err => {
         console.log('ErorrGetVoucher: ', err)
       });
- }
- const onRefresh = () =>{
-  setIsLoading(true);
-  onGetEndow();
-}
+  }
+  
+  const onRefresh = () => {
+    setIsLoading(true);
+    onGetEndow();
+  }
 
- console.log(endow)
+  console.log(endow)
 
- const formatCash = (str) => {
-  return str.split('').reverse().reduce((prev, next, index) => {
+  const formatCash = (str) => {
+    return str.split('').reverse().reduce((prev, next, index) => {
       return ((index % 3) ? next : (next + '.')) + prev
-  })
-}
+    })
+  }
 
   let [fontsLoaded, error] = useFonts({
     Montserrat_600SemiBold,
@@ -49,17 +55,17 @@ const EndowScreen = (props) => {
   };
   console.log(endow)
 
-  const renderItem = ({item}) => {
+  const renderItem = ({ item }) => {
     return (
-      <Pressable onPress={()=> navigation.navigate("DetailEndow",{id: item._id})}>
+      <Pressable onPress={() => navigation.navigate("DetailEndow", { id: item._id })}>
         <View style={styles.endowContainer}>
-        <Image style={styles.endowImage} source={{ uri: item.image }} resizeMode={'cover'} />
-        <View style={styles.endowTextContainer}>
-          <Text style={styles.endowText}>{item.body}</Text>
-          <Text style={styles.endowText}>{formatCash(item.discount.toString())}đ</Text>
-          <Text style={styles.endowText}>Hết hạn {item.end_date}</Text>
+          <Image style={styles.endowImage} source={{ uri: item.image }} resizeMode={'cover'} />
+          <View style={styles.endowTextContainer}>
+            <Text style={styles.endowText}>{item.body}</Text>
+            <Text style={styles.endowText}>{formatCash(item.discount.toString())}đ</Text>
+            <Text style={styles.endowText}>Hết hạn {item.end_date}</Text>
+          </View>
         </View>
-      </View>
       </Pressable>
     )
   }
@@ -71,28 +77,28 @@ const EndowScreen = (props) => {
       </View>
       <View style={styles.container}>
         {
-           isLoading ? 
-           <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-           <ActivityIndicator size="large" color="#CD6600" />
-           </View> :
-                   <FlatList
-                   ListHeaderComponent={
-                     <>
-                       <Text style={styles.readyText}>Sẵn sàng sử dụng</Text>
-                     </>
-                   }
-                   bounces={false}
-                   keyExtractor={(item) => item._id.toString()}
-                   renderItem={renderItem}
-                   data={endow}
-                   showsVerticalScrollIndicator={false}
-                   refreshControl={
-                     <RefreshControl
-                       refreshing={refresh}
-                       onRefresh={onRefresh}
-                     />
-                   }
-                 />
+          isLoading ?
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+              <ActivityIndicator size="large" color="#CD6600" />
+            </View> :
+            <FlatList
+              ListHeaderComponent={
+                <>
+                  <Text style={styles.readyText}>Sẵn sàng sử dụng</Text>
+                </>
+              }
+              bounces={false}
+              keyExtractor={(item) => item._id.toString()}
+              renderItem={renderItem}
+              data={endow}
+              showsVerticalScrollIndicator={false}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refresh}
+                  onRefresh={onRefresh}
+                />
+              }
+            />
         }
       </View>
     </View>
