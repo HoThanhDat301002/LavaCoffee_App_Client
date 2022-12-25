@@ -69,13 +69,13 @@ const ProfileScreen = (props) => {
                                 <Entypo name="chevron-small-right" size={24} color="black" />
                             </Pressable>
                             <View style={styles.line}></View>
-                            <Pressable onPress={() => navigation.navigate('UserConfirm')} style={styles.listBody}>
+                            {/* <Pressable onPress={() => navigation.navigate('UserConfirm')} style={styles.listBody}>
                                 <View style={styles.listBodyTextContainer}>
                                 <Ionicons name="ios-key-outline" size={18} color="black" />
                                     <Text style={styles.listBodyText}>Thay đổi mật khẩu</Text>
                                 </View>
                                 <Entypo name="chevron-small-right" size={24} color="black" />
-                            </Pressable>
+                            </Pressable> */}
                             <View style={styles.line}></View>
                             <TouchableOpacity onPress={postLogout}>
                                 <View style={styles.listBody}>

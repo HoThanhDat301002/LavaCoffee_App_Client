@@ -32,14 +32,13 @@ const UserInformation = (props) => {
       };
 
 
-
       const updateUser = async () => {
         try {
             if (
                 !name ||
                 !phone ||
                 name.trim().length == 0 ||
-                phone.trim().length == 0
+                phone.trim().length == 0 
               ) {
                   Alert('Vui lòng nhập đầy đủ thông tin')
                 return;
@@ -100,8 +99,17 @@ const UserInformation = (props) => {
                     <TextInput style={styles.input}
                         placeholder="Nhập số điện thoại"
                         onChangeText={setPhone}
+                        keyboardType = 'number-pad'
                         value ={phone}
                     />
+
+                    {/* <TextInput style={styles.input}
+                        keyboardType = 'number-pad'
+                        placeholder="Nhập tuổi"
+                        onChange={setAge}
+                        
+                        value ={age}
+                    /> */}
 
                     {/* <TextInput editable={false} style={styles.disableInput}>thucmien2002@gmail.com</TextInput>
                     <Pressable style={[styles.disableInput, { flexDirection: 'row', justifyContent: 'space-between' }]}>
@@ -158,10 +166,10 @@ const UserInformation = (props) => {
                 </View>
             </Modal>
             </ScrollView>
-            <View style={styles.deleteAccount}>
+            {/* <View style={styles.deleteAccount}>
                 <AntDesign name="delete" size={18} color="gray" />
                 <Text style={styles.deleteText}>Xóa tài khoản</Text>
-            </View>
+            </View> */}
         </View>
     )
 }
