@@ -27,6 +27,7 @@ const DetailEndow = (props, route) => {
       });
   }
 
+  //định dạng tiền
   const formatCash = (str) => {
     return str.split('').reverse().reduce((prev, next, index) => {
       return ((index % 3) ? next : (next + '.')) + prev
@@ -36,6 +37,7 @@ const DetailEndow = (props, route) => {
   if (!endowDetail) {
     return null
   }
+  
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>

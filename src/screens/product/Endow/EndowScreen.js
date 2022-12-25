@@ -29,7 +29,8 @@ const EndowScreen = (props) => {
         console.log('ErorrGetVoucher: ', err)
       });
   }
-  
+
+  //reload
   const onRefresh = () => {
     setIsLoading(true);
     onGetEndow();
@@ -37,12 +38,14 @@ const EndowScreen = (props) => {
 
   console.log(endow)
 
+  //định dạng tiền
   const formatCash = (str) => {
     return str.split('').reverse().reduce((prev, next, index) => {
       return ((index % 3) ? next : (next + '.')) + prev
     })
   }
 
+  //font
   let [fontsLoaded, error] = useFonts({
     Montserrat_600SemiBold,
     Montserrat_500Medium,
