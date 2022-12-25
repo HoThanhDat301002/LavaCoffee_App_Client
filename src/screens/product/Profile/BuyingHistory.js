@@ -63,6 +63,8 @@ const BuyingHistory = (props) => {
                         <Text style={styles.productDate}>{moment(item.released).format('L')}</Text>
                     </View>
                     {
+                        
+                        item.status === "WAITING" ? <Text style={styles.productStatus}>Chờ xác nhận</Text> :
                         item.status === "PROCESSING" ? <Text style={styles.productStatus}>Đang thực hiện</Text> :
                         item.status === "CANCEL" ? <Text style={[styles.productStatus, { color: 'red' }]}>Đã hủy</Text> :
                         item.status === "COMPLETE" ? <Text style={[styles.productStatus]}>Đã hoàn tất</Text> :

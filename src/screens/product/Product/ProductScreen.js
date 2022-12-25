@@ -180,26 +180,29 @@ return (
                   <View>
                     {
                       e.product.map(((pro) => {
-                        return(
-                          <Pressable key={pro._id} onPress={() => navigation.navigate('ProductDetail', {id: pro._id})} >
-                            <View style ={styles.productContainer}>
-                              <View style ={styles.product}>
-                                <View style={{flexDirection: 'row'}}>
-                                    <View>
-                                      <Image style={styles.imageProduct} source={{ uri: pro.image[0] ? pro.image[0] : null}}
-                                      resizeMode={"cover"}/>
-                                    </View>
-                                    <View style ={styles.textProductContainer}>
-                                      <Text numberOfLines={2} style={styles.textName}>{pro.name}</Text>
-                                      <Text style={styles.textPrice}>{formatCash(pro.price+"")}đ</Text>
-                                    </View>
-                                    
+                        if(pro.status == true){
+                          return(
+                            <Pressable key={pro._id} onPress={() => navigation.navigate('ProductDetail', {id: pro._id})} >
+                              <View style ={styles.productContainer}>
+                                <View style ={styles.product}>
+                                  <View style={{flexDirection: 'row'}}>
+                                      <View>
+                                        <Image style={styles.imageProduct} source={{ uri: pro.image[0] ? pro.image[0] : null}}
+                                        resizeMode={"cover"}/>
+                                      </View>
+                                      <View style ={styles.textProductContainer}>
+                                        <Text numberOfLines={2} style={styles.textName}>{pro.name}</Text>
+                                        <Text style={styles.textPrice}>{formatCash(pro.price+"")}đ</Text>
+                                      </View>
+                                      
+                                  </View>
+                                  <View></View>
                                 </View>
-                                <View></View>
                               </View>
-                            </View>
-                          </Pressable>
-                        )
+                            </Pressable>
+                          )
+                        }
+
                       }))
                     }
                   </View>

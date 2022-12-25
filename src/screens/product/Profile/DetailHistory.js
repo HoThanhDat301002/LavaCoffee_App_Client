@@ -80,8 +80,10 @@ const DetailHistory = ( props,route) => {
               <View style = {{alignItems: 'center',flexDirection: 'row',justifyContent: 'space-between',paddingRight: 20,paddingLeft: 10,paddingBottom: 10}}>
                   <Text style = {styles.texInfo}>Trạng thái</Text>
                     {
+                        
                         orderDetails.status == 'CANCEL' ? <Text style={[styles.texInfo, {marginLeft: 5, color: 'red'}]}>Đã hủy</Text> 
                         : orderDetails.status == 'PROCESSING'? <Text style={[styles.texInfo,{marginLeft: 5, color: '#CD6600'}]}>Đang thực hiện</Text>
+                        : orderDetails.status == 'WAITING'? <Text style={[styles.texInfo,{marginLeft: 5, color: '#CD6600'}]}>Chờ xác nhận</Text>
                         : orderDetails.status == 'COMPLETE'? <Text style={[styles.texInfo,{marginLeft: 5, color: '#CD6600'}]}>Hoàn thành</Text>
                         : <Text style={[styles.texInfo,{marginLeft: 5, color: '#CD6600'}]}>Đang vận chuyển</Text>
                     }
@@ -191,7 +193,7 @@ const DetailHistory = ( props,route) => {
 
             <View style={{paddingTop: 10, paddingLeft: 10, paddingRight: 20}}>
             {
-                        orderDetails.status == 'PROCESSING' ? 
+                        orderDetails.status == 'WAITING' ? 
                         <TouchableOpacity onPress={onOrderCancel}>
                         <View style={styles.buttonOrder}>
                             <Text style={styles.textButton}>HỦY ĐƠN</Text>

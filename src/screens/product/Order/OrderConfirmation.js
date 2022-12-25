@@ -91,7 +91,7 @@ const OrderConfirmation = (props) => {
                     address: orderStore.itemInfo[orderStore.itemInfo.length-1].address + ' ' + orderStore.itemInfo[orderStore.itemInfo.length-1].addressWard + ' ' + orderStore.itemInfo[orderStore.itemInfo.length-1].addressDistrict + ' ' + orderStore.itemInfo[orderStore.itemInfo.length-1].addressCity ,
                     paymentType: mood,
                     details: cartStore.items,
-                    status: "PROCESSING",
+                    status: "WAITING",
                     code: "",
                     feeDelivery: orderStore.itemInfo[orderStore.itemInfo.length-1].feeDelivery,
                     moneyTotal: orderStore.itemInfo[orderStore.itemInfo.length-1].moneyTotal,
